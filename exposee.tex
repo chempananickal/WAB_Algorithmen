@@ -1,0 +1,90 @@
+\input{info}
+
+\documentclass[12pt,a4paper,twoside,open=any]{scrreprt}
+
+\input{settings}
+\input{glossary}
+\input{abbreviations}
+
+\begin{document}
+\selectlanguage{english}
+
+% Front matter in Roman numerals
+\pagenumbering{Roman}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{flushright}
+\includegraphics[height=2.5cm]{Images/Cover/provadis-hochschule.pdf}
+\end{flushright}
+\vspace{1cm}
+\centering
+{\Large \textbf{WAB} \par}
+\vspace{0.5cm}
+{\Large \UniversityName \par}
+\vspace{1cm}
+{\LARGE \textbf{Expos\'e} \par}
+\vspace{0.5cm}
+{\Large \textbf{\ThesisTitle} \par}
+\vspace{0.5cm}
+{\Large \ThesisSubtitle \par}
+\vspace{2cm}
+{\large \AuthorName \par}
+{\large \AuthorEmail \par}
+\vspace{1.5cm}
+{\large Department: \DepartmentName \par}
+{\large Module: \ModuleName \par}
+{\large Reviewer: \ReviewerName \par}
+\vfill
+{\large \SubmissionDate \par}
+\end{titlepage}
+
+\tableofcontents
+
+% Glossary and abbreviations in front matter
+\printglossary[title=Glossary]
+% \printglossary[type=\acronymtype,title=Abbreviations,nonumberlist]
+
+% Exposee content in Arabic numerals
+\clearpage
+\chapter*{Expos\'e}
+\addcontentsline{toc}{chapter}{Expos\'e}
+\pagenumbering{arabic}
+
+\section*{Problem Statement}
+\addcontentsline{toc}{section}{Problem Statement}
+
+
+\section*{Objectives}
+\addcontentsline{toc}{section}{Objectives}
+
+
+\section*{Methodology}
+\addcontentsline{toc}{section}{Methodology}
+Lorem ipsum i guess
+
+\section*{Planned Structure}
+\addcontentsline{toc}{section}{Planned Structure}
+The paper will likely be structured as follows:
+\begin{itemize}
+    \item Introduction
+    \item Research Question and Objectives
+    \item Literature Review
+    \item Methodology
+    \item Results and Discussion
+    \item Limitations
+    \item Conclusion and Future Work
+    \item References
+    \item AI Declaration
+    \item Declaration of Authorship
+\end{itemize}
+
+\clearpage
+
+% Back matter in roman numerals
+\pagenumbering{roman}
+
+\nocite{*}
+\printbibliography
+
+\end{document}

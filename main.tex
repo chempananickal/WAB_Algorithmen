@@ -1,104 +1,65 @@
-% Vorlage für WABs der Provadis Hochschule
-% basiert auf "Universität Ulm Praktikumsbericht Vorlage"
-% von Max Sch.
-% CC BY 4.0
-%
-% main.tex
-%
-% Das ist das zentrale Dokument.
+\input{info}
 
+\documentclass[12pt,a4paper,twoside,open=any]{scrreprt}
 
-%persönliche Infos
-\input{Berichtinfos}
-
-\documentclass[
-	a4paper,
-	ngerman,
-	12pt,	% 12pt für Times, 11pt für Arial und 10pt für Verdana
-	bibliography=totoc,
-	listof=totoc,
-	numbers=noendperiod,
-	openany,
-	twoside,
-	headinclude=false,
-	titlepage=firstiscover,
-	abstract=true,
-	headsepline=true,
-	footsepline=true,
-	headings=big,
-	hyphenzone=1.25cm
-	]{scrreprt}
-%Startet das Dokument und regelt gleichzeitig Formatierungen wie Schriftgröße, Papierformat, Zahlenart, Sprache usw.
-% 12pt - die Standardschriftgröße
-% openany - Kapitel dürfen auch auf der "Rückseite" starten, Leerseiten werden vermieden
-% parskip=full - Leerzeilen zwischen Absätzen statt Einrückung
-% twoside - Rückseiten werden mit bedruckt, Seitenzahlen und Binderände werden entsprechen angepasst; Alternative: oneside
-
-% \RedeclareSectionCommand[
-%   beforeskip=-32pt
-% ]{chapter}
-% Optionaler Befehl zum editieren von dem margin top von Kapiteln
-
-%allgemeine Einstellungen
-\input{Einstellungen}
-
-\input{Glossar}
-
-\input{Abkuerzungen}
+\input{settings}
+\input{glossary}
+\input{abbreviations}
 
 \begin{document}
+\selectlanguage{english}
 
-\include{Kapitel/Titelseite}
-
-\preface
-%Ab hier Seitenzahlen mit Römischen Ziffern
-
-\listoftodos
-
-% auskommentieren, um den Sperrvermerk wegzulassen
-\include{Kapitel/Sperrvermerk}
-
-% auskommentieren, um den Abstract/Kurzzusammenfassung wegzulassen
-\include{Kapitel/Abstract}
-
-\tableofcontents
-%erstellt das vollautomatische Inhaltsverzeichnis
-
-\listoffigures
-%erstellt das Abbildungsverzeichnis
-
-\listoftables
-%erstellt das Tabellenverzeichnis
-
-\glsaddall[types=main]
-%Befehl, um alle Glossar Einträge ohne sie im body aufzurufen, auszugeben
-\printglossary[title=Glossar, type=\glsdefaulttype]
-%erstellt das Glossar
-
-\printglossary[type=\acronymtype, title=Abkürzungsverzeichnis, nonumberlist]
-%erstellt das Abkürzungsverzeichnis
-
-\newpage
-
-\body
-%ab hier Seitenzahlen in Arabischen Zahlen
-
-\include{Kapitel/01_Einleitung}
-\include{Kapitel/02_Stand.tex}
-\include{Kapitel/03_Methodik.tex}
-\include{Kapitel/04_Untersuchung.tex}
-\include{Kapitel/05_Ergebnisse.tex}
-\include{Kapitel/06_Fazit.tex}
-
+% Front matter in Roman numerals
 \pagenumbering{Roman}
 
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{flushright}
+\includegraphics[height=2.5cm]{Images/Cover/provadis-hochschule.pdf}
+\end{flushright}
+\vspace{1cm}
+\centering
+{\Large \textbf{WAB} \par}
+\vspace{0.5cm}
+{\Large \UniversityName \par}
+\vspace{1cm}
+{\LARGE \textbf{\ThesisTitle} \par}
+\vspace{0.5cm}
+{\Large \ThesisSubtitle \par}
+\vspace{2cm}
+{\large \AuthorName \par}
+{\large \AuthorEmail \par}
+\vspace{2cm}
+{\large Department: \DepartmentName \par}
+{\large Module: \ModuleName \par}
+{\large Reviewer: \ReviewerName \par}
+\vfill
+{\large \SubmissionDate \par}
+\end{titlepage}
+
+\include{Chapters/Abstract}
+
+\tableofcontents
+
+\listoffigures
+\listoftables
+
+% Glossary and abbreviations in front matter
+\printglossary[title=Glossary]
+% \printglossary[type=\acronymtype,title=Abbreviations,nonumberlist]
+\clearpage
+
+% Main content in Arabic numerals
+\pagenumbering{arabic}
+\include{Chapters/01_Introduction}
+\include{Chapters/02_Methods}
+
+% Back matter in roman numerals
+\pagenumbering{roman}
+
 \printbibliography
-%erstellt das Literaturverzeichnis
 
-\include{Kapitel/A1_KI}
-\include{Kapitel/A2_Erklaerung}
-
+\include{Chapters/AI_Declaration}
+\include{Chapters/Declaration}
 
 \end{document}
-%beendet das Dokument
-
