@@ -18,7 +18,7 @@
 \end{flushright}
 \vspace{1cm}
 \centering
-{\Large \textbf{WAB} \par}
+{\Large WAB \par}
 \vspace{0.5cm}
 {\Large \UniversityName \par}
 \vspace{1cm}
@@ -43,6 +43,7 @@
 
 % Glossary and abbreviations in front matter
 \printglossary[title=Glossary]
+\addcontentsline{toc}{chapter}{Glossary}
 % \printglossary[type=\acronymtype,title=Abbreviations,nonumberlist]
 
 % Exposee content in Arabic numerals
@@ -51,18 +52,46 @@
 \addcontentsline{toc}{chapter}{Expos\'e}
 \pagenumbering{arabic}
 
-\section*{Problem Statement}
-\addcontentsline{toc}{section}{Problem Statement}
-The Longest Common Substring (LCS) problem is a fundamental problem in computer science, with applications in multiple domains, bioinformatics being one of the most prominent.
-This is due to the fact that DNA/RNA sequences are usually encoded as strings for bioinformatics workflows, in a format called FASTA, originally described by Pearson and Lipman in 1985 \cite{pearson}.
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+The \acrlong{lcs} (\acrshort{lcs}) problem is a fundamental problem in computer science, with applications in multiple domains, bioinformatics being one of the most prominent.
+This is due to the fact that \gls{dna} and \gls{rna} sequences are usually encoded as strings for bioinformatics workflows, in a format called FASTA, originally described by Pearson and Lipman in 1985 \cite{pearson}.
+
+The \acrshort{lcs} problem is defined as follows: 
+\begin{displaycquote}{lcsdef}
+  Given two strings S and T, each of length at most n, the longest common substring (\acrshort{lcs}) problem is to find a longest substring common to S and T.  
+\end{displaycquote}
+For example, given the strings "AG\textbf{CTAGC}" and "T\textbf{CTAGC}TA", the longest common substring is "CTAGC", which has a length of 5.
+The \acrshort{lcs} problem can be solved using various algorithms, such as dynamic programming, suffix trees, suffix arrays, and suffix automata, each with different time and space complexities.
+
+Of particular interest are the \acrfull{sam} (also known as \acrfull{dawg}) and the \acrfull{sa} with \acrfull{lcp} Array, which both yield the search result in linear time, but differ in their construction time and space requirements.
+
+\section*{Research Question}
+\addcontentsline{toc}{section}{Research Question}
+The primary research question of this paper is:
+\begin{quote}
+  How do the \acrlong{sam} and the \acrfull{sa} with \acrshort{lcp} Array compare in terms of time and space complexity when solving the \acrlong{lcs} problem in an everyday programming context?
+\end{quote}
+
+Python\cite{python} was chosen as the programming language for this paper due to the fact that it is by far the most popular programming language for bioinformatics \cite{pythonproof}.
 
 \section*{Objectives}
 \addcontentsline{toc}{section}{Objectives}
+The objectives of this paper are as follows:
+\begin{itemize}
+    \item To implement the \acrlong{sam} and the \acrfull{sa} with \acrfull{lcp} Array algorithms for solving the \acrlong{lcs} problem.
+    \item To evaluate the time and space complexity of both algorithms using a Python script that measures their performance on a variety of test cases.
+    \item To analyze the results and draw conclusions about the trade-offs between the two approaches in terms of their efficiency and practicality for real-world applications.
+\end{itemize}
 
 
 \section*{Methodology}
 \addcontentsline{toc}{section}{Methodology}
+The \acrshort{sam} and \acrshort{sa} + \acrshort{lcp} Array algorithms will be implemented in Python, and only synthetic test cases will be used to evaluate their performance.
+The amount of memory consumed by the algorithms will be measured using the \texttt{memory\_profiler} library, while the time taken by the algorithms will be measured using the \texttt{timeit} library.
+To ensure a fair comparison, both algorithms will be tested on the same set of input strings and on the same machine, and the results will be averaged over multiple runs to account for any variability in performance.
 
+\clearpage
 \section*{Planned Structure}
 \addcontentsline{toc}{section}{Planned Structure}
 The paper will likely be structured as follows:
