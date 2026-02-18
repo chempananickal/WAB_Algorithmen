@@ -1,8 +1,3 @@
-# Simple LaTeX Template
+# WAB Algorithmen und Datenstrukturen
 
-This template provides two entry points:
-
-- main.tex for the full paper
-- exposee.tex for the exposee
-
-Chapters live in the Chapters/ directory and are included from main.tex.
+Part of my Bachelor's degree course at Provadis Hochschule, Germany.
