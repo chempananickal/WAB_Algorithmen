@@ -64,13 +64,13 @@ The \acrshort{lcs} problem is defined as follows:
 For example, given the strings "AG\textbf{CTAGC}" and "T\textbf{CTAGC}TA", the longest common substring is "CTAGC", which has a length of 5.
 The \acrshort{lcs} problem can be solved using various algorithms, such as dynamic programming, suffix trees, suffix arrays, and suffix automata, each with different time and space complexities.
 
-Of particular interest are the \acrfull{sam} (also known as \acrfull{dawg}) and the \acrfull{sa} with \acrfull{lcp} Array, which both yield the search result in linear time, but differ in their construction time and space requirements.
+Of particular interest are the \acrfull{sam} (also known as \acrfull{dawg}) and the \acrfull{sa} with \acrfull{lcp} Array (also known as an \acrfull{esa}), which both yield the search result in linear time, but differ in their construction time and space requirements.
 
 \section*{Research Question}
 \addcontentsline{toc}{section}{Research Question}
 The primary research question of this paper is:
 \begin{quote}
-  How do the \acrlong{sam} and the \acrfull{sa} with \acrshort{lcp} Array compare in terms of time and space complexity when solving the \acrlong{lcs} problem in an everyday programming context?
+  How do the \acrlong{sam} and the \acrfull{esa} compare in terms of time and space complexity when solving the \acrlong{lcs} problem in an everyday programming context?
 \end{quote}
 
 Python\cite{python} was chosen as the programming language for this paper due to the fact that it is by far the most popular programming language for bioinformatics \cite{pythonproof}.
@@ -79,7 +79,8 @@ Python\cite{python} was chosen as the programming language for this paper due to
 \addcontentsline{toc}{section}{Objectives}
 The objectives of this paper are as follows:
 \begin{itemize}
-    \item To implement the \acrlong{sam} and the \acrfull{sa} with \acrfull{lcp} Array algorithms for solving the \acrlong{lcs} problem.
+    \item To review the existing literature on algorithms for solving the \acrlong{lcs} problem, with a focus on the \acrlong{sam} and the \acrfull{esa}.
+    \item To implement the \acrlong{sam} and the \acrfull{esa} algorithms for solving the \acrlong{lcs} problem.
     \item To evaluate the time and space complexity of both algorithms using a Python script that measures their performance on a variety of test cases.
     \item To analyze the results and draw conclusions about the trade-offs between the two approaches in terms of their efficiency and practicality for real-world applications.
 \end{itemize}
@@ -87,9 +88,13 @@ The objectives of this paper are as follows:
 
 \section*{Methodology}
 \addcontentsline{toc}{section}{Methodology}
-The \acrshort{sam} and \acrshort{sa} + \acrshort{lcp} Array algorithms will be implemented in Python, and only synthetic test cases will be used to evaluate their performance.
-The amount of memory consumed by the algorithms will be measured using the \texttt{memory\_profiler} library, while the time taken by the algorithms will be measured using the \texttt{timeit} library.
+The \acrshort{sam} and \acrshort{esa} algorithms will be implemented in Python, and only synthetic test cases will be used to evaluate their performance.
+The amount of memory consumed by the algorithms will be measured using the \texttt{tracemalloc} library, while the time taken by the algorithms will be measured using the \texttt{time} library.
+
 To ensure a fair comparison, both algorithms will be tested on the same set of input strings and on the same machine, and the results will be averaged over multiple runs to account for any variability in performance.
+Additionally, the median, standard deviation, and interquartile range of the results will be calculated to provide a more comprehensive analysis of the performance of both algorithms and to account for the inherent non-determinism of the operating environment.
+
+These results will be compared against the expected theoretical time and space complexities for constructing and querying the \acrshort{sam} and the \acrshort{esa} algorithms.
 
 \clearpage
 \section*{Planned Structure}
@@ -98,6 +103,7 @@ The paper will likely be structured as follows:
 \begin{itemize}
     \item Introduction
     \item Research Question and Objectives
+    \item 
     \item Literature Review
     \item Methodology
     \item Results and Discussion
