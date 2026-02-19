@@ -28,5 +28,10 @@ The usage of AI tools within this project is documented here. I solemnly declare
     GitHub Copilot 8 & Requested Python benchmark code for LCS comparison with multiple synthetic scenarios (random strings, implanted mutated substrings, etc.) & Created benchmark script and documentation in Code folder \\
     GitHub Copilot 9 & Asked to add a progress-bar-like output. & Added optional single-line in-place progress output with percentage, completed/total steps, elapsed time, ETA, and \texttt{--progress}/\texttt{--no-progress} flags \\
     GitHub Copilot 10 & Reported that ETA was inaccurate due to varying string lengths & Reworked ETA estimation to be algorithm- and length-aware using observed per-bucket runtimes\\
+    GitHub Copilot 11 & Requested separate build and query timing (and plots). & Refactored benchmark to record build/query time separately and added total time summaries \\
+    GitHub Copilot 12 & Requested plots using statistics beyond the mean (median, standard deviation, etc.). & Expanded summary stats and generated mean+std and median+IQR plots alongside memory plots \\
+    GitHub Copilot 13 & Requested splitting benchmarking and plotting so plot generation can run separately, with a shared CLI entry point and default run-then-plot behavior. & Added CLI mode switch (run/plot/both) to reuse saved CSV results for plotting without rerunning benchmarks \\
+    GitHub Copilot 14 & Requested an error if the two algorithms return different LCS result strings for the same input. & Added strict substring equality check (in addition to length) and raise an error on mismatch \\
+    GitHub Copilot 15 & Requested that, in case of multiple valid LCS results, both algorithms return all results and compare the sets. & Updated both algorithms to return all max-length substrings and compare result sets for correctness \\
 \end{longtable}
 }

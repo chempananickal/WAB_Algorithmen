@@ -27,8 +27,8 @@ import random
 
 @dataclass(frozen=True)
 class LCSResult:
-    substring: str
     length: int
+    substrings: set[str]
 
 
 @dataclass(frozen=True)
@@ -41,11 +41,15 @@ class BenchmarkCase:
     metadata: dict[str, Any]
 
 
-def lcs_suffix_automaton(s: str, t: str) -> LCSResult:
-    """Longest common substring using a Suffix Automaton built from s."""
-    if not s or not t:
-        return LCSResult("", 0)
+@dataclass(frozen=True)
+class SAM:
+    transitions: list[dict[str, int]]
+    suffix_link: list[int]
+    state_length: list[int]
 
+
+def build_suffix_automaton(s: str) -> SAM:
+    """Build a suffix automaton from s."""
     transitions: list[dict[str, int]] = [{}]
     suffix_link: list[int] = [-1]
     state_length: list[int] = [0]
@@ -87,10 +91,23 @@ def lcs_suffix_automaton(s: str, t: str) -> LCSResult:
     for char in s:
         extend(char)
 
+    return SAM(transitions=transitions, suffix_link=suffix_link, state_length=state_length)
+
+
+def query_suffix_automaton(automaton: SAM, t: str) -> LCSResult:
+    """All longest common substrings using a prebuilt suffix automaton."""
+    if not t:
+        return LCSResult(0, set())
+
+    transitions = automaton.transitions
+    suffix_link = automaton.suffix_link
+    state_length = automaton.state_length
+
     state = 0
     current_length = 0
     best_length = 0
     best_end_position = -1
+    best_substrings: set[str] = set()
 
     for index, char in enumerate(t):
         if char in transitions[state]:
@@ -111,12 +128,16 @@ def lcs_suffix_automaton(s: str, t: str) -> LCSResult:
         if current_length > best_length:
             best_length = current_length
             best_end_position = index
+            start = best_end_position - best_length + 1
+            best_substrings = {t[start : best_end_position + 1]}
+        elif current_length == best_length and best_length > 0:
+            start = index - best_length + 1
+            best_substrings.add(t[start : index + 1])
 
     if best_length == 0:
-        return LCSResult("", 0)
+        return LCSResult(0, set())
 
-    start = best_end_position - best_length + 1
-    return LCSResult(t[start : best_end_position + 1], best_length) # best end pos + 1 becuase slice end is exclusive
+    return LCSResult(best_length, best_substrings)
 
 
 def _pick_separator(s: str, t: str) -> str: # Added because I'm paranoid and because I might reuse this with a near full ASCII search space
@@ -184,43 +205,57 @@ def build_lcp_array(text: str, suffix_array: list[int]) -> list[int]:
     return lcp
 
 
-def lcs_enhanced_suffix_array(s: str, t: str) -> LCSResult:
-    """Longest common substring using Enhanced Suffix Array (SA + LCP)."""
-    if not s or not t:
-        return LCSResult("", 0)
+@dataclass(frozen=True)
+class EnhancedSuffixArray:
+    joined: str
+    split_index: int
+    suffix_array: list[int]
+    lcp: list[int]
 
+
+def build_enhanced_suffix_array(s: str, t: str) -> EnhancedSuffixArray:
+    """Build Enhanced Suffix Array (SA + LCP) for s and t."""
     separator = _pick_separator(s, t)
     joined = s + separator + t
     split_index = len(s)
-
     suffix_array = build_suffix_array(joined)
     lcp = build_lcp_array(joined, suffix_array)
+    return EnhancedSuffixArray(
+        joined=joined,
+        split_index=split_index,
+        suffix_array=suffix_array,
+        lcp=lcp,
+    )
+
+
+def query_enhanced_suffix_array(esa: EnhancedSuffixArray) -> LCSResult:
+    """All longest common substrings using a prebuilt Enhanced Suffix Array."""
+    if not esa.joined:
+        return LCSResult(0, set())
 
     best_length = 0
-    best_start = 0
+    best_substrings: set[str] = set()
 
-    for i in range(1, len(suffix_array)):
-        left = suffix_array[i - 1]
-        right = suffix_array[i]
+    for i in range(1, len(esa.suffix_array)):
+        left = esa.suffix_array[i - 1]
+        right = esa.suffix_array[i]
 
-        left_from_s = left < split_index
-        right_from_s = right < split_index
+        left_from_s = left < esa.split_index
+        right_from_s = right < esa.split_index
         if left_from_s == right_from_s:
             continue
 
-        candidate = lcp[i]
+        candidate = esa.lcp[i]
         if candidate > best_length:
             best_length = candidate
-            best_start = right
+            best_substrings = {esa.joined[right : right + best_length]}
+        elif candidate == best_length and best_length > 0:
+            best_substrings.add(esa.joined[right : right + best_length])
 
     if best_length == 0:
-        return LCSResult("", 0)
+        return LCSResult(0, set())
 
-    substring = joined[best_start : best_start + best_length]
-    if separator in substring:
-        substring = substring.split(separator, maxsplit=1)[0]
-
-    return LCSResult(substring, len(substring))
+    return LCSResult(best_length, best_substrings)
 
 
 def random_string(rng: random.Random, length: int, alphabet: str) -> str:
@@ -326,35 +361,65 @@ def generate_cases(lengths: list[int], cases_per_length: int, seed: int) -> list
 
 
 def measure_algorithm(
-    algorithm: Callable[[str, str], LCSResult],
+    build_fn: Callable[[str, str], Any],
+    query_fn: Callable[[Any, str], LCSResult],
     s: str,
     t: str,
-) -> tuple[float, float, int]:
-    """Return runtime (ms), peak memory (KiB), and LCS length for one call."""
+) -> tuple[float, float, float, LCSResult]:
+    """Return build/query runtime (ms), peak memory (KiB), and LCS results."""
     tracemalloc.start()
-    start = time.perf_counter_ns()
-    result = algorithm(s, t)
-    end = time.perf_counter_ns()
+
+    build_start = time.perf_counter_ns()
+    built = build_fn(s, t)
+    build_end = time.perf_counter_ns()
+
+    query_start = time.perf_counter_ns()
+    result = query_fn(built, t)
+    query_end = time.perf_counter_ns()
+
     _, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
 
-    elapsed_ms = (end - start) / 1_000_000
+    build_ms = (build_end - build_start) / 1_000_000
+    query_ms = (query_end - query_start) / 1_000_000
     peak_kib = peak / 1024
-    return elapsed_ms, peak_kib, result.length
+    return build_ms, query_ms, peak_kib, result
 
 
 def iqr(series: pd.Series) -> float:
     return float(series.quantile(0.75) - series.quantile(0.25))
 
 
+def q1(series: pd.Series) -> float:
+    return float(series.quantile(0.25))
+
+
+def q3(series: pd.Series) -> float:
+    return float(series.quantile(0.75))
+
+
 def aggregate_results(raw_df: pd.DataFrame) -> pd.DataFrame:
     grouped = raw_df.groupby(["scenario", "length", "algorithm"], as_index=False).agg(
-        time_mean_ms=("time_ms", "mean"),
-        time_median_ms=("time_ms", "median"),
-        time_std_ms=("time_ms", "std"),
-        time_iqr_ms=("time_ms", iqr),
-        time_min_ms=("time_ms", "min"),
-        time_max_ms=("time_ms", "max"),
+        build_mean_ms=("build_time_ms", "mean"),
+        build_median_ms=("build_time_ms", "median"),
+        build_std_ms=("build_time_ms", "std"),
+        build_iqr_ms=("build_time_ms", iqr),
+        build_q1_ms=("build_time_ms", q1),
+        build_q3_ms=("build_time_ms", q3),
+        build_min_ms=("build_time_ms", "min"),
+        build_max_ms=("build_time_ms", "max"),
+        query_mean_ms=("query_time_ms", "mean"),
+        query_median_ms=("query_time_ms", "median"),
+        query_std_ms=("query_time_ms", "std"),
+        query_iqr_ms=("query_time_ms", iqr),
+        query_q1_ms=("query_time_ms", q1),
+        query_q3_ms=("query_time_ms", q3),
+        query_min_ms=("query_time_ms", "min"),
+        query_max_ms=("query_time_ms", "max"),
+        total_mean_ms=("total_time_ms", "mean"),
+        total_median_ms=("total_time_ms", "median"),
+        total_std_ms=("total_time_ms", "std"),
+        total_iqr_ms=("total_time_ms", iqr),
         memory_mean_kib=("peak_memory_kib", "mean"),
         memory_median_kib=("peak_memory_kib", "median"),
         memory_std_kib=("peak_memory_kib", "std"),
@@ -376,10 +441,16 @@ def export_latex_tables(summary_df: pd.DataFrame, output_dir: Path) -> None:
             [
                 "length",
                 "algorithm",
-                "time_mean_ms",
-                "time_median_ms",
-                "time_std_ms",
-                "time_iqr_ms",
+                "build_mean_ms",
+                "build_median_ms",
+                "build_std_ms",
+                "build_iqr_ms",
+                "query_mean_ms",
+                "query_median_ms",
+                "query_std_ms",
+                "query_iqr_ms",
+                "total_mean_ms",
+                "total_median_ms",
                 "memory_mean_kib",
                 "memory_median_kib",
                 "memory_std_kib",
@@ -401,32 +472,99 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
 
         for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
             sorted_df = algorithm_df.sort_values("length")
+            axes[0].errorbar(
+                sorted_df["length"],
+                sorted_df["build_mean_ms"],
+                yerr=sorted_df["build_std_ms"],
+                marker="o",
+                capsize=3,
+                label=algorithm,
+            )
+            axes[1].errorbar(
+                sorted_df["length"],
+                sorted_df["query_mean_ms"],
+                yerr=sorted_df["query_std_ms"],
+                marker="o",
+                capsize=3,
+                label=algorithm,
+            )
+
+        axes[0].set_title(f"Build time vs Length ({scenario})")
+        axes[0].set_xlabel("String length")
+        axes[0].set_ylabel("Mean build time [ms]")
+        axes[0].grid(True, alpha=0.3)
+
+        axes[1].set_title(f"Query time vs Length ({scenario})")
+        axes[1].set_xlabel("String length")
+        axes[1].set_ylabel("Mean query time [ms]")
+        axes[1].grid(True, alpha=0.3)
+
+        handles, labels = axes[0].get_legend_handles_labels()
+        fig.legend(handles, labels, loc="upper center", ncol=2)
+        fig.savefig(plots_dir / f"benchmark_mean_{scenario}.png", dpi=220)
+        plt.close(fig)
+
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5), constrained_layout=True)
+
+        for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
+            sorted_df = algorithm_df.sort_values("length")
             axes[0].plot(
                 sorted_df["length"],
-                sorted_df["time_mean_ms"],
+                sorted_df["build_median_ms"],
                 marker="o",
                 label=algorithm,
             )
+            axes[0].fill_between(
+                sorted_df["length"],
+                sorted_df["build_q1_ms"],
+                sorted_df["build_q3_ms"],
+                alpha=0.2,
+            )
             axes[1].plot(
+                sorted_df["length"],
+                sorted_df["query_median_ms"],
+                marker="o",
+                label=algorithm,
+            )
+            axes[1].fill_between(
+                sorted_df["length"],
+                sorted_df["query_q1_ms"],
+                sorted_df["query_q3_ms"],
+                alpha=0.2,
+            )
+
+        axes[0].set_title(f"Build median + IQR ({scenario})")
+        axes[0].set_xlabel("String length")
+        axes[0].set_ylabel("Median build time [ms]")
+        axes[0].grid(True, alpha=0.3)
+
+        axes[1].set_title(f"Query median + IQR ({scenario})")
+        axes[1].set_xlabel("String length")
+        axes[1].set_ylabel("Median query time [ms]")
+        axes[1].grid(True, alpha=0.3)
+
+        handles, labels = axes[0].get_legend_handles_labels()
+        fig.legend(handles, labels, loc="upper center", ncol=2)
+        fig.savefig(plots_dir / f"benchmark_median_iqr_{scenario}.png", dpi=220)
+        plt.close(fig)
+
+        fig, ax = plt.subplots(1, 1, figsize=(7, 5), constrained_layout=True)
+
+        for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
+            sorted_df = algorithm_df.sort_values("length")
+            ax.plot(
                 sorted_df["length"],
                 sorted_df["memory_mean_kib"],
                 marker="o",
                 label=algorithm,
             )
 
-        axes[0].set_title(f"Runtime vs Length ({scenario})")
-        axes[0].set_xlabel("String length")
-        axes[0].set_ylabel("Mean runtime [ms]")
-        axes[0].grid(True, alpha=0.3)
-
-        axes[1].set_title(f"Peak memory vs Length ({scenario})")
-        axes[1].set_xlabel("String length")
-        axes[1].set_ylabel("Mean peak memory [KiB]")
-        axes[1].grid(True, alpha=0.3)
-
-        handles, labels = axes[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc="upper center", ncol=2)
-        fig.savefig(plots_dir / f"benchmark_{scenario}.png", dpi=220)
+        ax.set_title(f"Peak memory vs Length ({scenario})")
+        ax.set_xlabel("String length")
+        ax.set_ylabel("Mean peak memory [KiB]")
+        ax.grid(True, alpha=0.3)
+        ax.legend(loc="upper left")
+        fig.savefig(plots_dir / f"benchmark_memory_{scenario}.png", dpi=220)
         plt.close(fig)
 
 
@@ -435,9 +573,15 @@ def build_parser() -> argparse.ArgumentParser:
         description="Benchmark Suffix Automaton vs Enhanced Suffix Array for LCS."
     )
     parser.add_argument(
+        "--mode",
+        choices=["run", "plot", "both"],
+        default="both",
+        help="Run benchmarks, generate plots from existing results, or both.",
+    )
+    parser.add_argument(
         "--lengths",
         type=str,
-        default="100,250,500,1000,10000",
+        default="100,500,1000,5000,10000",
         help="Comma-separated string lengths, e.g. 100,250,500",
     )
     parser.add_argument(
@@ -502,9 +646,15 @@ def run_benchmarks(
 ) -> pd.DataFrame:
     cases = generate_cases(lengths=lengths, cases_per_length=cases_per_length, seed=seed)
 
-    algorithms: dict[str, Callable[[str, str], LCSResult]] = {
-        "Suffix Automaton": lcs_suffix_automaton,
-        "Enhanced Suffix Array": lcs_enhanced_suffix_array,
+    algorithms: dict[str, tuple[Callable[[str, str], Any], Callable[[Any, str], LCSResult]]] = {
+        "Suffix Automaton": (
+            lambda s, _t: build_suffix_automaton(s),
+            lambda sam, t: query_suffix_automaton(sam, t),
+        ),
+        "Enhanced Suffix Array": (
+            build_enhanced_suffix_array,
+            lambda esa, _t: query_enhanced_suffix_array(esa),
+        ),
     }
 
     rows: list[dict[str, Any]] = []
@@ -549,11 +699,16 @@ def run_benchmarks(
         for run_index in range(1, runs + 1):
             run_outcomes: dict[str, int] = {}
 
-            for algorithm_name, algorithm in algorithms.items():
-                elapsed_ms, peak_kib, lcs_length = measure_algorithm(algorithm, case.s, case.t)
-                run_outcomes[algorithm_name] = lcs_length
+            for algorithm_name, (build_fn, query_fn) in algorithms.items():
+                build_ms, query_ms, peak_kib, lcs_result = measure_algorithm(
+                    build_fn,
+                    query_fn,
+                    case.s,
+                    case.t,
+                )
+                run_outcomes[algorithm_name] = lcs_result
 
-                elapsed_seconds = elapsed_ms / 1000.0
+                elapsed_seconds = (build_ms + query_ms) / 1000.0
                 bucket = (algorithm_name, case.length)
                 observed_sums[bucket] = observed_sums.get(bucket, 0.0) + elapsed_seconds
                 observed_counts[bucket] = observed_counts.get(bucket, 0) + 1
@@ -567,9 +722,11 @@ def run_benchmarks(
                         "length": case.length,
                         "run": run_index,
                         "algorithm": algorithm_name,
-                        "time_ms": elapsed_ms,
+                        "build_time_ms": build_ms,
+                        "query_time_ms": query_ms,
+                        "total_time_ms": build_ms + query_ms,
                         "peak_memory_kib": peak_kib,
-                        "lcs_length": lcs_length,
+                        "lcs_length": lcs_result.length,
                     }
                 )
 
@@ -582,12 +739,13 @@ def run_benchmarks(
                     )
                     sys.stdout.flush()
 
-            sam_length = run_outcomes["Suffix Automaton"]
-            esa_length = run_outcomes["Enhanced Suffix Array"]
-            if sam_length != esa_length:
+            sam_result = run_outcomes["Suffix Automaton"]
+            esa_result = run_outcomes["Enhanced Suffix Array"]
+            if sam_result.length != esa_result.length or sam_result.substrings != esa_result.substrings:
                 raise ValueError(
-                    "Correctness mismatch detected: "
-                    f"case={case.case_id}, run={run_index}, SAM={sam_length}, ESA={esa_length}"
+                    f"Correctness mismatch detected: case={case.case_id}, run={run_index}, "
+                    f"SAM=({sam_result.length}, {sorted(sam_result.substrings)}), "
+                    f"ESA=({esa_result.length}, {sorted(esa_result.substrings)})"
                 )
 
     if show_progress:
@@ -597,15 +755,24 @@ def run_benchmarks(
     return pd.DataFrame(rows)
 
 
+def load_raw_results(output_dir: Path) -> pd.DataFrame:
+    raw_path = output_dir / "raw_runs.csv"
+    if not raw_path.exists():
+        raise FileNotFoundError(
+            f"Missing raw results at {raw_path}. Run with --mode run or --mode both first."
+        )
+    return pd.read_csv(raw_path)
+
+
 def print_console_summary(summary_df: pd.DataFrame) -> None:
     for scenario, scenario_df in summary_df.groupby("scenario"):
         print(f"\n=== Scenario: {scenario} ===")
         pivot = scenario_df.pivot_table(
             index="length",
             columns="algorithm",
-            values="time_mean_ms",
+            values="total_mean_ms",
         ).sort_index()
-        print("Mean runtime [ms]:")
+        print("Mean total runtime [ms]:")
         print(pivot.round(4).to_string())
 
 
@@ -624,37 +791,42 @@ def main() -> None:
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    raw_df = run_benchmarks(
-        lengths=lengths,
-        cases_per_length=args.cases_per_length,
-        runs=args.runs,
-        seed=args.seed,
-        show_progress=args.show_progress,
-    )
-    summary_df = aggregate_results(raw_df)
+    if args.mode in {"run", "both"}:
+        raw_df = run_benchmarks(
+            lengths=lengths,
+            cases_per_length=args.cases_per_length,
+            runs=args.runs,
+            seed=args.seed,
+            show_progress=args.show_progress,
+        )
+        raw_df.to_csv(output_dir / "raw_runs.csv", index=False)
 
-    raw_df.to_csv(output_dir / "raw_runs.csv", index=False)
-    summary_df.to_csv(output_dir / "summary_stats.csv", index=False)
-    export_latex_tables(summary_df, output_dir)
-    export_plots(summary_df, output_dir)
-    print_console_summary(summary_df)
+        config = {
+            "lengths": lengths,
+            "cases_per_length": args.cases_per_length,
+            "runs": args.runs,
+            "seed": args.seed,
+            "output_dir": str(output_dir),
+        }
+        (output_dir / "benchmark_config.txt").write_text(
+            "\n".join(f"{k}: {v}" for k, v in config.items()),
+            encoding="utf-8",
+        )
 
-    config = {
-        "lengths": lengths,
-        "cases_per_length": args.cases_per_length,
-        "runs": args.runs,
-        "seed": args.seed,
-        "output_dir": str(output_dir),
-    }
-    (output_dir / "benchmark_config.txt").write_text(
-        "\n".join(f"{k}: {v}" for k, v in config.items()),
-        encoding="utf-8",
-    )
+    if args.mode in {"plot", "both"}:
+        raw_df = load_raw_results(output_dir)
+        summary_df = aggregate_results(raw_df)
+        summary_df.to_csv(output_dir / "summary_stats.csv", index=False)
+        export_latex_tables(summary_df, output_dir)
+        export_plots(summary_df, output_dir)
+        print_console_summary(summary_df)
 
-    print(f"\nSaved raw data to: {output_dir / 'raw_runs.csv'}")
-    print(f"Saved summary to: {output_dir / 'summary_stats.csv'}")
-    print(f"Saved LaTeX tables in: {output_dir / 'tables'}")
-    print(f"Saved plots in: {output_dir / 'plots'}")
+        print(f"\nSaved summary to: {output_dir / 'summary_stats.csv'}")
+        print(f"Saved LaTeX tables in: {output_dir / 'tables'}")
+        print(f"Saved plots in: {output_dir / 'plots'}")
+
+    if args.mode in {"run", "both"}:
+        print(f"Saved raw data to: {output_dir / 'raw_runs.csv'}")
 
 
 if __name__ == "__main__":
