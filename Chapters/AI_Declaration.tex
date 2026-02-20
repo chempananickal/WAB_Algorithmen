@@ -33,5 +33,10 @@ The usage of AI tools within this project is documented here. I solemnly declare
     GitHub Copilot 13 & Requested splitting benchmarking and plotting so plot generation can run separately, with a shared CLI entry point and default run-then-plot behavior. & Added CLI mode switch (run/plot/both) to reuse saved CSV results for plotting without rerunning benchmarks \\
     GitHub Copilot 14 & Requested an error if the two algorithms return different LCS result strings for the same input. & Added strict substring equality check (in addition to length) and raise an error on mismatch \\
     GitHub Copilot 15 & Requested that, in case of multiple valid LCS results, both algorithms return all results and compare the sets. & Updated both algorithms to return all max-length substrings and compare result sets for correctness \\
+    GitHub Copilot 16 & Requested refactoring the benchmark script into helper modules under a helpers subdirectory, with separate algorithm imports and plotting helper, and clean top-level imports in the main file. & Split benchmark code into dedicated helper modules (SAM, ESA, plotting, generation, statistics, benchmarking) and simplified main script orchestration \\
+    GitHub Copilot 17 & Requested mean, median, standard deviation, and IQR for memory usage plots as well. & Added memory quartile aggregation and generated memory mean+SD plus median+IQR plots \\
+    GitHub Copilot 18 & Asked for a practical memory/space-complexity metric and whether build-time and query-time memory can be measured separately. & Added separate build/query phase memory metrics and a persistent index-size metric, with aggregation and plots for comparison \\
+    GitHub Copilot 19 & Asked whether adding total time (build + query) columns and graphs with full statistics would make sense. & Added full total-time statistics (mean, median, std, IQR, Q1, Q3) to summaries and created dedicated total-time plots \\
+    GitHub Copilot 20 & Requested moving plot legends away from the top center because they obscured titles. & Repositioned all figure legends to the right side outside the plotting area to keep titles unobstructed \\
 \end{longtable}
 }

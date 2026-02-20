@@ -1,4 +1,4 @@
-lengths: [100, 250, 500, 1000, 10000]
+lengths: [100, 500, 1000, 5000, 10000]
 cases_per_length: 5
 runs: 100
 seed: 42
