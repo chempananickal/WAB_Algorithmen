@@ -1,7 +1,0 @@
-{
-    "latex-workshop.latex.clean.method": "command",
-    "terminal.integrated.defaultProfile.windows": "Git Bash",
-    "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python-envs.defaultPackageManager": "ms-python.python:conda",
-    "python-envs.pythonProjects": [],
-}

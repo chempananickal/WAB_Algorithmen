@@ -11,7 +11,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     plots_dir.mkdir(parents=True, exist_ok=True)
 
     for scenario, scenario_df in summary_df.groupby("scenario"):
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5), constrained_layout=True)
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
             sorted_df = algorithm_df.sort_values("length")
@@ -44,10 +44,10 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
 
         handles, labels = axes[0].get_legend_handles_labels()
         fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"benchmark_mean_{scenario}.png", dpi=220)
+        fig.savefig(plots_dir / f"mean_{scenario}.png", dpi=220, bbox_inches="tight")
         plt.close(fig)
 
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5), constrained_layout=True)
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
             sorted_df = algorithm_df.sort_values("length")
@@ -88,10 +88,10 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
 
         handles, labels = axes[0].get_legend_handles_labels()
         fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"benchmark_median_iqr_{scenario}.png", dpi=220)
+        fig.savefig(plots_dir / f"median_iqr_{scenario}.png", dpi=220, bbox_inches="tight")
         plt.close(fig)
 
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5), constrained_layout=True)
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
             sorted_df = algorithm_df.sort_values("length")
@@ -128,10 +128,10 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
 
         handles, labels = axes[0].get_legend_handles_labels()
         fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"benchmark_total_stats_{scenario}.png", dpi=220)
+        fig.savefig(plots_dir / f"total_stats_{scenario}.png", dpi=220, bbox_inches="tight")
         plt.close(fig)
 
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5), constrained_layout=True)
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
             sorted_df = algorithm_df.sort_values("length")
@@ -168,10 +168,10 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
 
         handles, labels = axes[0].get_legend_handles_labels()
         fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"benchmark_memory_stats_{scenario}.png", dpi=220)
+        fig.savefig(plots_dir / f"memory_stats_{scenario}.png", dpi=220, bbox_inches="tight")
         plt.close(fig)
 
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5), constrained_layout=True)
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
             sorted_df = algorithm_df.sort_values("length")
@@ -216,5 +216,5 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
             handles.extend(h)
             labels.extend(l)
         fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"benchmark_space_practical_{scenario}.png", dpi=220)
+        fig.savefig(plots_dir / f"space_practical_{scenario}.png", dpi=220, bbox_inches="tight")
         plt.close(fig)

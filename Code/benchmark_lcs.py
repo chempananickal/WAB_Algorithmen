@@ -42,13 +42,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--cases-per-length",
         type=int,
-        default=5,
+        default=25,
         help="How many generated cases per scenario and length.",
     )
     parser.add_argument(
         "--runs",
         type=int,
-        default=100,
+        default=20,
         help="Benchmark repetitions per case and algorithm.",
     )
     parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility.")
@@ -90,7 +90,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if args.mode in {"run", "both"}:
-        raw_df = run_benchmarks(
+        raw_df, lcs_cases_df = run_benchmarks(
             lengths=lengths,
             cases_per_length=args.cases_per_length,
             runs=args.runs,
@@ -98,6 +98,7 @@ def main() -> None:
             show_progress=args.show_progress,
         )
         raw_df.to_csv(output_dir / "raw_runs.csv", index=False)
+        lcs_cases_df.to_csv(output_dir / "case_lcs_values.csv", index=False)
 
         config = {
             "lengths": lengths,
@@ -125,6 +126,7 @@ def main() -> None:
 
     if args.mode in {"run", "both"}:
         print(f"Saved raw data to: {output_dir / 'raw_runs.csv'}")
+        print(f"Saved case strings + LCS values to: {output_dir / 'case_lcs_values.csv'}")
 
 
 if __name__ == "__main__":

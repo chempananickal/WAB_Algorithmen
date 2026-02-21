@@ -32,6 +32,7 @@ python Code/benchmark_lcs.py --lengths 100,250,500,1000,2000 --cases-per-length 
 By default, outputs are written to `Code/results/`:
 
 - `raw_runs.csv` (all single runs)
+- `case_lcs_values.csv` (each generated string pair `s`, `t`, plus all LCS value(s))
 - `summary_stats.csv` (mean, median, std, IQR, min, max)
 - `tables/summary_<scenario>.tex` (LaTeX tables)
 - `plots/benchmark_<scenario>.png` (runtime + memory graphs)

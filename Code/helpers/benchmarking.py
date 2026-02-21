@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import time
 import tracemalloc
@@ -121,7 +122,7 @@ def run_benchmarks(
     runs: int,
     seed: int,
     show_progress: bool = True,
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     cases = generate_cases(lengths=lengths, cases_per_length=cases_per_length, seed=seed)
 
     algorithms: dict[str, tuple[Callable[[str, str], Any], Callable[[Any, str], LCSResult]]] = {
@@ -136,6 +137,7 @@ def run_benchmarks(
     }
 
     rows: list[dict[str, Any]] = []
+    case_lcs_rows: list[dict[str, Any]] = []
     total_steps = len(cases) * runs * len(algorithms)
     completed_steps = 0
     started_at = time.perf_counter()
@@ -239,11 +241,24 @@ def run_benchmarks(
                     f"ESA=({esa_result.length}, {sorted(esa_result.substrings)})"
                 )
 
+            if run_index == 1:
+                case_lcs_rows.append(
+                    {
+                        "case_id": case.case_id,
+                        "scenario": case.scenario,
+                        "length": case.length,
+                        "s": case.s,
+                        "t": case.t,
+                        "lcs_length": sam_result.length,
+                        "lcs_values": json.dumps(sorted(sam_result.substrings), ensure_ascii=False),
+                    }
+                )
+
     if show_progress:
         sys.stdout.write("\n")
         sys.stdout.flush()
 
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows), pd.DataFrame(case_lcs_rows)
 
 
 def print_console_summary(summary_df: pd.DataFrame) -> None:

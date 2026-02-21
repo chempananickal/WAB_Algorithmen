@@ -1,5 +1,5 @@
 lengths: [100, 500, 1000, 5000, 10000]
-cases_per_length: 5
-runs: 100
+cases_per_length: 20
+runs: 25
 seed: 42
 output_dir: Code\Results
