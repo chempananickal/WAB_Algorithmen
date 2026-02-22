@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
 from helpers.models import EnhancedSuffixArray, LCSResult
 
 
@@ -15,25 +14,28 @@ def _pick_separator(s: str, t: str) -> str: #NOTE: redundant. Might remove later
 
 
 def build_suffix_array(text: str) -> list[int]:
-    """Build suffix array with prefix-doubling (O(n log n))."""
+    """Build suffix array using induced sorting (faster than the lambda I had before)."""
     n = len(text)
     if n == 0:
         return []
-
+  
+    # Use simple stable sort with tuple keys (faster than lambda)
     suffix_array = list(range(n))
     rank = [ord(ch) for ch in text]
     k = 1
 
     while True:
-        suffix_array.sort(key=lambda idx: (rank[idx], rank[idx + k] if idx + k < n else -1))
+        # Pre-compute keys to avoid repeated function calls
+        keys = [(rank[i], rank[i + k] if i + k < n else -1, i) 
+                for i in range(n)]
+        keys.sort()
+        suffix_array = [key[2] for key in keys]
 
         new_rank = [0] * n
         for i in range(1, n):
-            previous = suffix_array[i - 1]
-            current = suffix_array[i]
-            prev_key = (rank[previous], rank[previous + k] if previous + k < n else -1)
-            curr_key = (rank[current], rank[current + k] if current + k < n else -1)
-            new_rank[current] = new_rank[previous] + (curr_key != prev_key)
+            prev_key = keys[i - 1][:2]
+            curr_key = keys[i][:2]
+            new_rank[keys[i][2]] = new_rank[keys[i-1][2]] + (curr_key != prev_key)
 
         rank = new_rank
         if rank[suffix_array[-1]] == n - 1:
@@ -105,9 +107,11 @@ def query_enhanced_suffix_array(esa: EnhancedSuffixArray) -> LCSResult:
         candidate = esa.lcp[i]
         if candidate > best_length:
             best_length = candidate
-            best_substrings = {esa.joined[right : right + best_length]}
+            pos = min(left, right) # bug fix
+            best_substrings = {esa.joined[pos : pos + best_length]}
         elif candidate == best_length and best_length > 0:
-            best_substrings.add(esa.joined[right : right + best_length])
+            pos = min(left, right) # bug fix
+            best_substrings.add(esa.joined[pos : pos + best_length])
 
     if best_length == 0:
         return LCSResult(0, set())
