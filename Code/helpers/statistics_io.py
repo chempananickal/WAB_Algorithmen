@@ -76,40 +76,37 @@ def export_latex_tables(summary_df: pd.DataFrame, output_dir: Path) -> None:
     tables_dir.mkdir(parents=True, exist_ok=True)
 
     for scenario, scenario_df in summary_df.groupby("scenario"):
-        compact = scenario_df[
-            [
-                "length",
-                "algorithm",
-                "build_mean_ms",
-                "build_median_ms",
-                "build_std_ms",
-                "build_iqr_ms",
-                "query_mean_ms",
-                "query_median_ms",
-                "query_std_ms",
-                "query_iqr_ms",
-                "total_mean_ms",
-                "total_median_ms",
-                "total_std_ms",
-                "total_iqr_ms",
-                "total_q1_ms",
-                "total_q3_ms",
-                "memory_mean_kib",
-                "memory_median_kib",
-                "memory_std_kib",
-                "memory_iqr_kib",
-                "memory_q1_kib",
-                "memory_q3_kib",
-                "build_peak_memory_mean_kib",
-                "query_peak_memory_mean_kib",
-                "query_extra_memory_mean_kib",
-                "index_size_mean_kib",
-                "runs",
-            ]
-        ].copy()
-
-        latex = compact.to_latex(index=False, float_format=lambda x: f"{x:.4f}")
-        (tables_dir / f"summary_{scenario}.tex").write_text(latex, encoding="utf-8")
+        # For each algorithm, create a subtable
+        latex_tables = []
+        for algorithm, algo_df in scenario_df.groupby("algorithm"):
+            compact = algo_df[
+                [
+                    "length",
+                    # "algorithm",  # omit algorithm column in subtable
+                    "build_median_ms",
+                    "build_iqr_ms",
+                    "query_median_ms",
+                    "query_iqr_ms",
+                    "total_median_ms",
+                    "total_iqr_ms",
+                    "total_q1_ms",
+                    "total_q3_ms",
+                    "memory_median_kib",
+                    "memory_iqr_kib",
+                    "memory_q1_kib",
+                    "memory_q3_kib",
+                    "build_peak_memory_median_kib",
+                    "query_peak_memory_median_kib",
+                    "query_extra_memory_median_kib",
+                    "index_size_median_kib",
+                    "runs",
+                ]
+            ].copy()
+            latex = compact.to_latex(index=False, float_format=lambda x: f"{x:.4f}", caption=f"{algorithm}", label=f"tab:{scenario}_{algorithm.replace(' ', '_').lower()}")
+            latex_tables.append(latex)
+        # Join all subtables for this scenario
+        latex_full = "\n\n".join(latex_tables)
+        (tables_dir / f"summary_{scenario}.tex").write_text(latex_full, encoding="utf-8")
 
 
 def load_raw_results(output_dir: Path) -> pd.DataFrame:

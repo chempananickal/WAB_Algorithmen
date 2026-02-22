@@ -10,211 +10,206 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     plots_dir = output_dir / "plots"
     plots_dir.mkdir(parents=True, exist_ok=True)
 
-    for scenario, scenario_df in summary_df.groupby("scenario"):
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-        for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
-            sorted_df = algorithm_df.sort_values("length")
-            axes[0].errorbar(
-                sorted_df["length"],
-                sorted_df["build_mean_ms"],
-                yerr=sorted_df["build_std_ms"],
-                marker="o",
-                capsize=3,
-                label=algorithm,
-            )
-            axes[1].errorbar(
-                sorted_df["length"],
-                sorted_df["query_mean_ms"],
-                yerr=sorted_df["query_std_ms"],
-                marker="o",
-                capsize=3,
-                label=algorithm,
-            )
-
-        axes[0].set_title(f"Build time vs Length ({scenario})")
-        axes[0].set_xlabel("String length")
-        axes[0].set_ylabel("Mean build time [ms]")
-        axes[0].grid(True, alpha=0.3)
-
-        axes[1].set_title(f"Query time vs Length ({scenario})")
-        axes[1].set_xlabel("String length")
-        axes[1].set_ylabel("Mean query time [ms]")
-        axes[1].grid(True, alpha=0.3)
-
-        handles, labels = axes[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"mean_{scenario}.png", dpi=220, bbox_inches="tight")
+    def plot_metric_by_scenario(summary_df, metric, yerr=None, title=None, ylabel=None, filename=None, kind="errorbar", fill_between=None):
+        import math
+        scenarios = list(summary_df['scenario'].unique())
+        n = len(scenarios)
+        ncols = math.ceil(math.sqrt(n))
+        nrows = math.ceil(n / ncols)
+        fig, axes = plt.subplots(nrows, ncols, figsize=(6*ncols, 5*nrows))
+        axes = axes.flatten() if n > 1 else [axes]
+        legend_handles, legend_labels = None, None
+        for i, scenario in enumerate(scenarios):
+            ax = axes[i]
+            scenario_df = summary_df[summary_df['scenario'] == scenario]
+            for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
+                sorted_df = algorithm_df.sort_values("length")
+                label = f"{algorithm}"
+                if kind == "errorbar":
+                    line = ax.errorbar(
+                        sorted_df["length"],
+                        sorted_df[metric],
+                        yerr=sorted_df[yerr] if yerr else None,
+                        marker="o",
+                        capsize=3,
+                        label=label,
+                    )
+                elif kind == "plot":
+                    line = ax.plot(
+                        sorted_df["length"],
+                        sorted_df[metric],
+                        marker="o",
+                        label=label,
+                    )
+                    if fill_between:
+                        ax.fill_between(
+                            sorted_df["length"],
+                            sorted_df[fill_between[0]],
+                            sorted_df[fill_between[1]],
+                            alpha=0.2,
+                        )
+            ax.set_title(f"{scenario}")
+            ax.set_xlabel("String length")
+            ax.set_ylabel(ylabel)
+            ax.grid(True, alpha=0.3)
+            # Ensure y-axis tick labels are visible for all subplots
+            ax.yaxis.set_tick_params(labelleft=True)
+            # Save legend handles/labels from the first subplot with data
+            if legend_handles is None or legend_labels is None:
+                legend_handles, legend_labels = ax.get_legend_handles_labels()
+        # Hide unused subplots and use the last vacant one for the legend
+        last_used = i
+        for j in range(i+1, nrows*ncols):
+            ax = axes[j]
+            ax.axis('off')
+        # Place legend in the last vacant subplot, or in the last subplot if all are used
+        legend_ax = axes[last_used+1] if (last_used+1) < len(axes) else axes[-1]
+        legend_ax.axis('off')
+        legend_ax.legend(legend_handles, legend_labels, loc='center')
+        fig.suptitle(title)
+        fig.tight_layout(rect=[0, 0, 1, 1])
+        fig.savefig(plots_dir / filename, dpi=220, bbox_inches="tight")
         plt.close(fig)
 
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    # Build time mean + SD
+    plot_metric_by_scenario(
+        summary_df,
+        metric="build_mean_ms",
+        yerr="build_std_ms",
+        title="Build time mean + SD",
+        ylabel="Mean build time [ms]",
+        filename="build_time_mean_sd.png",
+        kind="errorbar"
+    )
 
-        for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
-            sorted_df = algorithm_df.sort_values("length")
-            axes[0].plot(
-                sorted_df["length"],
-                sorted_df["build_median_ms"],
-                marker="o",
-                label=algorithm,
-            )
-            axes[0].fill_between(
-                sorted_df["length"],
-                sorted_df["build_q1_ms"],
-                sorted_df["build_q3_ms"],
-                alpha=0.2,
-            )
-            axes[1].plot(
-                sorted_df["length"],
-                sorted_df["query_median_ms"],
-                marker="o",
-                label=algorithm,
-            )
-            axes[1].fill_between(
-                sorted_df["length"],
-                sorted_df["query_q1_ms"],
-                sorted_df["query_q3_ms"],
-                alpha=0.2,
-            )
+    # Build time median + IQR
+    plot_metric_by_scenario(
+        summary_df,
+        metric="build_median_ms",
+        title="Build time median + IQR",
+        ylabel="Median build time [ms]",
+        filename="build_time_median_iqr.png",
+        kind="plot",
+        fill_between=("build_q1_ms", "build_q3_ms")
+    )
 
-        axes[0].set_title(f"Build median + IQR ({scenario})")
-        axes[0].set_xlabel("String length")
-        axes[0].set_ylabel("Median build time [ms]")
-        axes[0].grid(True, alpha=0.3)
+    # Query time mean + SD
+    plot_metric_by_scenario(
+        summary_df,
+        metric="query_mean_ms",
+        yerr="query_std_ms",
+        title="Query time mean + SD",
+        ylabel="Mean query time [ms]",
+        filename="query_time_mean_sd.png",
+        kind="errorbar"
+    )
 
-        axes[1].set_title(f"Query median + IQR ({scenario})")
-        axes[1].set_xlabel("String length")
-        axes[1].set_ylabel("Median query time [ms]")
-        axes[1].grid(True, alpha=0.3)
+    # Query time median + IQR
+    plot_metric_by_scenario(
+        summary_df,
+        metric="query_median_ms",
+        title="Query time median + IQR",
+        ylabel="Median query time [ms]",
+        filename="query_time_median_iqr.png",
+        kind="plot",
+        fill_between=("query_q1_ms", "query_q3_ms")
+    )
 
-        handles, labels = axes[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"median_iqr_{scenario}.png", dpi=220, bbox_inches="tight")
-        plt.close(fig)
+    # Total time mean + SD
+    plot_metric_by_scenario(
+        summary_df,
+        metric="total_mean_ms",
+        yerr="total_std_ms",
+        title="Total time mean + SD",
+        ylabel="Mean total time [ms]",
+        filename="total_time_mean_sd.png",
+        kind="errorbar"
+    )
 
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    # Total time median + IQR
+    plot_metric_by_scenario(
+        summary_df,
+        metric="total_median_ms",
+        title="Total time median + IQR",
+        ylabel="Median total time [ms]",
+        filename="total_time_median_iqr.png",
+        kind="plot",
+        fill_between=("total_q1_ms", "total_q3_ms")
+    )
 
-        for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
-            sorted_df = algorithm_df.sort_values("length")
-            axes[0].errorbar(
-                sorted_df["length"],
-                sorted_df["total_mean_ms"],
-                yerr=sorted_df["total_std_ms"],
-                marker="o",
-                capsize=3,
-                label=algorithm,
-            )
-            axes[1].plot(
-                sorted_df["length"],
-                sorted_df["total_median_ms"],
-                marker="o",
-                label=algorithm,
-            )
-            axes[1].fill_between(
-                sorted_df["length"],
-                sorted_df["total_q1_ms"],
-                sorted_df["total_q3_ms"],
-                alpha=0.2,
-            )
+    # Peak memory mean + SD
+    plot_metric_by_scenario(
+        summary_df,
+        metric="memory_mean_kib",
+        yerr="memory_std_kib",
+        title="Peak memory mean + SD",
+        ylabel="Mean peak memory [KiB]",
+        filename="peak_memory_mean_sd.png",
+        kind="errorbar"
+    )
 
-        axes[0].set_title(f"Total time mean + SD ({scenario})")
-        axes[0].set_xlabel("String length")
-        axes[0].set_ylabel("Mean total time [ms]")
-        axes[0].grid(True, alpha=0.3)
+    # Peak memory median + IQR
+    plot_metric_by_scenario(
+        summary_df,
+        metric="memory_median_kib",
+        title="Peak memory median + IQR",
+        ylabel="Median peak memory [KiB]",
+        filename="peak_memory_median_iqr.png",
+        kind="plot",
+        fill_between=("memory_q1_kib", "memory_q3_kib")
+    )
 
-        axes[1].set_title(f"Total time median + IQR ({scenario})")
-        axes[1].set_xlabel("String length")
-        axes[1].set_ylabel("Median total time [ms]")
-        axes[1].grid(True, alpha=0.3)
+    # Index size mean + SD
+    plot_metric_by_scenario(
+        summary_df,
+        metric="index_size_mean_kib",
+        yerr="index_size_std_kib",
+        title="Index size mean + SD",
+        ylabel="Mean index size [KiB]",
+        filename="index_size_mean_sd.png",
+        kind="errorbar"
+    )
 
-        handles, labels = axes[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"total_stats_{scenario}.png", dpi=220, bbox_inches="tight")
-        plt.close(fig)
+    # Build peak memory mean + SD
+    plot_metric_by_scenario(
+        summary_df,
+        metric="build_peak_memory_mean_kib",
+        yerr="build_peak_memory_std_kib",
+        title="Build peak memory mean + SD",
+        ylabel="Mean build peak memory [KiB]",
+        filename="build_peak_memory_mean_sd.png",
+        kind="errorbar"
+    )
 
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    # Build peak memory median + IQR
+    plot_metric_by_scenario(
+        summary_df,
+        metric="build_peak_memory_median_kib",
+        title="Build peak memory median + IQR",
+        ylabel="Median build peak memory [KiB]",
+        filename="build_peak_memory_median_iqr.png",
+        kind="plot",
+        fill_between=("build_peak_memory_iqr_kib", "build_peak_memory_iqr_kib")
+    )
 
-        for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
-            sorted_df = algorithm_df.sort_values("length")
-            axes[0].errorbar(
-                sorted_df["length"],
-                sorted_df["memory_mean_kib"],
-                yerr=sorted_df["memory_std_kib"],
-                marker="o",
-                capsize=3,
-                label=algorithm,
-            )
-            axes[1].plot(
-                sorted_df["length"],
-                sorted_df["memory_median_kib"],
-                marker="o",
-                label=algorithm,
-            )
-            axes[1].fill_between(
-                sorted_df["length"],
-                sorted_df["memory_q1_kib"],
-                sorted_df["memory_q3_kib"],
-                alpha=0.2,
-            )
+    # Query extra memory mean + SD
+    plot_metric_by_scenario(
+        summary_df,
+        metric="query_extra_memory_mean_kib",
+        yerr="query_extra_memory_std_kib",
+        title="Query extra memory mean + SD",
+        ylabel="Mean query extra memory [KiB]",
+        filename="query_extra_memory_mean_sd.png",
+        kind="errorbar"
+    )
 
-        axes[0].set_title(f"Peak memory mean + SD ({scenario})")
-        axes[0].set_xlabel("String length")
-        axes[0].set_ylabel("Mean peak memory [KiB]")
-        axes[0].grid(True, alpha=0.3)
-
-        axes[1].set_title(f"Peak memory median + IQR ({scenario})")
-        axes[1].set_xlabel("String length")
-        axes[1].set_ylabel("Median peak memory [KiB]")
-        axes[1].grid(True, alpha=0.3)
-
-        handles, labels = axes[0].get_legend_handles_labels()
-        fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"memory_stats_{scenario}.png", dpi=220, bbox_inches="tight")
-        plt.close(fig)
-
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-        for algorithm, algorithm_df in scenario_df.groupby("algorithm"):
-            sorted_df = algorithm_df.sort_values("length")
-            axes[0].errorbar(
-                sorted_df["length"],
-                sorted_df["index_size_mean_kib"],
-                yerr=sorted_df["index_size_std_kib"],
-                marker="o",
-                capsize=3,
-                label=algorithm,
-            )
-            axes[1].errorbar(
-                sorted_df["length"],
-                sorted_df["build_peak_memory_mean_kib"],
-                yerr=sorted_df["build_peak_memory_std_kib"],
-                marker="o",
-                capsize=3,
-                label=f"{algorithm} (build peak)",
-            )
-            axes[1].errorbar(
-                sorted_df["length"],
-                sorted_df["query_extra_memory_mean_kib"],
-                yerr=sorted_df["query_extra_memory_std_kib"],
-                marker="s",
-                capsize=3,
-                label=f"{algorithm} (query extra)",
-            )
-
-        axes[0].set_title(f"Index size vs Length ({scenario})")
-        axes[0].set_xlabel("String length")
-        axes[0].set_ylabel("Mean index size [KiB]")
-        axes[0].grid(True, alpha=0.3)
-
-        axes[1].set_title(f"Build/query memory vs Length ({scenario})")
-        axes[1].set_xlabel("String length")
-        axes[1].set_ylabel("Mean memory [KiB]")
-        axes[1].grid(True, alpha=0.3)
-
-        handles, labels = [], []
-        for ax in axes:
-            h, l = ax.get_legend_handles_labels()
-            handles.extend(h)
-            labels.extend(l)
-        fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1)
-        fig.savefig(plots_dir / f"space_practical_{scenario}.png", dpi=220, bbox_inches="tight")
-        plt.close(fig)
+    # Query extra memory median + IQR
+    plot_metric_by_scenario(
+        summary_df,
+        metric="query_extra_memory_median_kib",
+        title="Query extra memory median + IQR",
+        ylabel="Median query extra memory [KiB]",
+        filename="query_extra_memory_median_iqr.png",
+        kind="plot",
+        fill_between=("query_extra_memory_iqr_kib", "query_extra_memory_iqr_kib")
+    )
