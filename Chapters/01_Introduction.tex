@@ -3,5 +3,16 @@
 % Write your introduction here.
 
 \section{Background}
+The \acrfull{lcs} problem is a fundamental problem in computer science, with applications in multiple domains, bioinformatics being one of the most prominent.
+This is due to the fact that \gls{dna} and \gls{rna} sequences are usually encoded as strings for bioinformatics workflows, in a format called FASTA, originally described by Pearson and Lipman in 1985 \cite{pearson}.
+
+The \acrshort{lcs} problem is defined as follows: 
+\begin{displaycquote}{lcsdef}
+  Given two strings S and T, each of length at most n, the longest common substring (\acrshort{lcs}) problem is to find a longest substring common to S and T.  
+\end{displaycquote}
+For example, given the strings "AG\textbf{CTAGC}" and "T\textbf{CTAGC}TA", the longest common substring is "CTAGC", which has a length of 5.
+The \acrshort{lcs} problem can be solved using various algorithms, such as dynamic programming, suffix trees, suffix arrays, and suffix automata, each with different time and space complexities.
+
+Of particular interest are the \acrfull{sam} (also known as \acrfull{dawg}) and the \acrfull{sa} with \acrfull{lcp} Array (also known as an \acrfull{esa}), which both yield the search result in linear time, but differ in their construction time and space requirements.
 
 \section{Research Questions}
