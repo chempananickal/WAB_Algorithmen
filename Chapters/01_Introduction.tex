@@ -41,11 +41,13 @@ A \acrfull{sam} is a data structure that represents all the substrings of a give
 
 The \acrshort{sam} was first introduced by Blumer et al. in 1985 \cite{sam}, 
 and its use in solving the \acrshort{lcs} problem has been explored in various works, 
-such as in the book Text Algorithms by Crochemore and Rytter, in chapter 6 \cite{crochemore1994text}.
+such as in the book \textit{Text Algorithms} by Crochemore and Rytter, in chapter 6 \cite{crochemore1994text}.
 
 A notable feature of the \acrlong{sam} is that it can be constructed with just one string,
 and in fact, the same automaton can then be reused to find the \acrlong{lcs} of that string and any other string, 
 by traversing the automaton with the second string and keeping track of the longest match found.
+The same automaton can therefore be used to find the \acrshort{lcs} of the first string and any number of other strings,
+without having to reconstruct it every time.
 
 \subsection{Enhanced Suffix Array}
 
@@ -60,6 +62,10 @@ finding the maximum value in the \acrshort{lcp} Array corresponding to suffixes 
 The \acrshort{lcp} Array will be constructed using Kasai's algorithm\cite{kasai}, 
 which is a linear time algorithm for constructing the \acrshort{lcp} Array from the \acrshort{sa}.
 
+A notable feature of the \acrshort{esa} is that it can be constructed with more than two strings at once,
+by concatenating the strings together with unique delimiters (sentinels), and then constructing the \acrshort{esa} for the concatenated string.
+This allows for finding the \acrshort{lcs} of all the strings at once.
+
 \section{Motivation}
 
 Although there have been many papers comparing either the \acrshort{sam} or the \acrshort{esa} to the Suffix Tree, 
@@ -67,7 +73,7 @@ there is a lack of direct comparisons between these two data structures,
 even though they both solve the same problem using the same underlying principle of representing the suffixes of a string in a compact way.
 
 Moreover, there is a lack of practical comparisons between these two structures in the context of specific programming languages,
-as the obtuse memory management of languages like Python could potentially lead to real-world results not matching up with theoretical expectations, especially when it comes to space usage.
+as the obtuse memory management of languages like Python\cite{python} could potentially lead to real-world results not matching up with theoretical expectations, especially when it comes to space usage.
 
 \section{Research Question}
 The primary research question of this paper is:

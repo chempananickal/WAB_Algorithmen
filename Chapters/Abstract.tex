@@ -3,13 +3,13 @@
 
 % Write your abstract here.
 The objective of this paper was to compare the performance of two algorithms, the \acrlong{sam} and the \acrlong{esa}, 
-for solving the \acrlong{lcs} problem in a pure Python implementation.
+for solving the \acrlong{lcs} problem \textbf{between two strings} in a pure Python implementation.
 
 The algorithms were tested on multiple scenarios, from best case to worst case, and on multiple string lengths, from 100 to 10,000 characters, 
 with multiple runs for each scenario and string length to ensure statistical significance of the results.
 Both the build time and the query time were measured, as well as the memory used both for building the data structure and for querying it.
 
-The results showed that \textbf{so long as one is programming in pure Python}, an \acrlong{esa} offers practically zero advantages over a \acrlong{sam}.
+The results showed that \textbf{so long as one is programming in pure Python, and so long as only two strings are involved}, an \acrlong{esa} offers practically zero advantages over a \acrlong{sam}.
 The \acrlong{sam} was substantially faster to build and to query in all but one scenario, 
 and although the \acrlong{esa} had an overall smaller index size, this would do very little in real-life memory-constrained applications, 
 as its peak memory usage was either comparable to the \acrlong{sam} or only barely smaller in all scenarios and string lengths.
@@ -23,14 +23,14 @@ Due to Python's memory management, the \acrlong{esa} would also lose its cache l
 \chapter*{Abstrakt}
 \begin{itshape}
 Das Ziel dieser Arbeit war es, die Leistung von zwei Algorithmen, dem \acrlong{sam} und dem \acrlong{esa}, 
-bei der Lösung des \acrlong{lcs}-Problems in einer reinen Python-Implementierung zu vergleichen.
+bei der Lösung des \acrlong{lcs}-Problems \textbf{zwischen zwei Zeichenketten (Strings)} in einer reinen Python-Implementierung zu vergleichen.
 
 Die Algorithmen wurden in verschiedenen Szenarien getestet, von besten bis zu schlechtesten Fällen, 
 und auf verschiedenen Stringlängen, von 100 bis 10.000 Zeichen,
 mit mehreren Durchläufen für jedes Szenario und jede Stringlänge, um die statistische Signifikanz der Ergebnisse sicherzustellen.
 Sowohl die Aufbauzeit als auch die Abfragezeit wurden gemessen, ebenso wie der für den Aufbau der Datenstruktur und für die Abfrage verwendete Speicher.
 
-Die Ergebnisse zeigten, dass \textbf{solange man in reinem Python programmiert}, ein \acrlong{esa} praktisch keine Vorteile gegenüber einem \acrlong{sam} bietet.
+Die Ergebnisse zeigten, dass \textbf{solange man in reinem Python programmiert und nur zwei Zeichenketten beteiligt sind}, ein \acrlong{esa} praktisch keine Vorteile gegenüber einem \acrlong{sam} bietet.
 Der \acrlong{sam} war wesentlich schneller im Aufbau und in der Abfrage in allen bis auf einer der Szenarien,
 und obwohl der \acrlong{esa} insgesamt eine kleinere Indexgröße hatte, würde dies in realen, speicherbeschränkten Anwendungen nur sehr wenig ausmachen, 
 da sein Spitzen-Speicherverbrauch in allen Szenarien und Stringlängen entweder vergleichbar mit dem des \acrlong{sam}s oder nur ein wenig kleiner war.
