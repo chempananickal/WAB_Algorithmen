@@ -75,3 +75,53 @@ URL={https://bioinfo.dcc.ufmg.br/history/}
  publisher = {CreateSpace},
  address = {Scotts Valley, CA}
 }
+
+@article{samdef,
+title = {General suffix automaton construction algorithm and space bounds},
+journal = {Theoretical Computer Science},
+volume = {410},
+number = {37},
+pages = {3553-3562},
+year = {2009},
+note = {Implementation and Application of Automata (CIAA 2007)},
+issn = {0304-3975},
+doi = {https://doi.org/10.1016/j.tcs.2009.03.034},
+url = {https://www.sciencedirect.com/science/article/pii/S0304397509002370},
+author = {Mehryar Mohri and Pedro Moreno and Eugene Weinstein},
+keywords = {String-matching, Pattern-matching, Indexing, Inverted text, Finite automata, Suffix trees, Suffix automata, Factor automata, Music identification},
+abstract = {Suffix automata and factor automata are efficient data structures for representing the full index of a set of strings. They are minimal deterministic automata representing the set of all suffixes or substrings of a set of strings. This paper presents a novel analysis of the size of the suffix automaton or factor automaton of a set of strings. It shows that the suffix automaton or factor automaton of a set of strings U has at most 2Q−2 states, where Q is the number of nodes of a prefix-tree representing the strings in U. This bound significantly improves over 2‖U‖−1, the bound given by Blumer et al. [A. Blumer, J. Blumer, D. Haussler, R.M. McConnell, A. Ehrenfeucht, Complete inverted files for efficient text retrieval and analysis, Journal of the ACM 34 (1987) 578–589], where ‖U‖ is the sum of the lengths of all strings in U. More generally, we give novel and general bounds for the size of the suffix or factor automaton of an automaton as a function of the size of the original automaton and the maximal length of a suffix shared by the strings it accepts. We also describe in detail a linear-time algorithm for constructing the suffix automaton S or factor automaton F of U in time O(|S|). Our algorithm applies in fact to any input suffix-unique automaton and strictly generalizes the standard on-line construction of a suffix automaton for a single input string. Our algorithm can also be used straightforwardly to generate the suffix oracle or factor oracle of a set of strings, which has been shown to have various useful properties in string-matching. Our analysis suggests that the use of factor automata of automata can be practical for large-scale applications, a fact that is further supported by the results of our experiments applying factor automata to a music identification task with more than 15,000 songs.}
+}
+
+@book{crochemore1994text,
+  title={Text algorithms},
+  author={Crochemore, Maxime and Rytter, Wojciech},
+  year={1994},
+  publisher={Maxime Crochemore}
+}
+
+@article{esadef,
+title = {Replacing suffix trees with enhanced suffix arrays},
+journal = {Journal of Discrete Algorithms},
+volume = {2},
+number = {1},
+pages = {53-86},
+year = {2004},
+note = {The 9th International Symposium on String Processing and Information Retrieval},
+issn = {1570-8667},
+doi = {https://doi.org/10.1016/S1570-8667(03)00065-0},
+url = {https://www.sciencedirect.com/science/article/pii/S1570866703000650},
+author = {Mohamed Ibrahim Abouelhoda and Stefan Kurtz and Enno Ohlebusch},
+keywords = {Suffix array, Suffix tree, Repeat analysis, Genome comparison, Pattern matching},
+abstract = {The suffix tree is one of the most important data structures in string processing and comparative genomics. However, the space consumption of the suffix tree is a bottleneck in large scale applications such as genome analysis. In this article, we will overcome this obstacle. We will show how every algorithm that uses a suffix tree as data structure can systematically be replaced with an algorithm that uses an enhanced suffix array and solves the same problem in the same time complexity. The generic name enhanced suffix array stands for data structures consisting of the suffix array and additional tables. Our new algorithms are not only more space efficient than previous ones, but they are also faster and easier to implement.}
+}
+
+@INPROCEEDINGS{weiner,
+  author={Weiner, Peter},
+  booktitle={14th Annual Symposium on Switching and Automata Theory (swat 1973)}, 
+  title={Linear pattern matching algorithms}, 
+  year={1973},
+  volume={},
+  number={},
+  pages={1-11},
+  keywords={Pattern matching;Data structures;Terminology},
+  doi={10.1109/SWAT.1973.13}}
