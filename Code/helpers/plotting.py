@@ -2,8 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
+
+matplotlib.rc('text', usetex=True)
+matplotlib.rc('font', family='serif')
 
 
 def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
@@ -78,7 +82,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     #     yerr="build_std_ms",
     #     title="Build time mean + SD",
     #     ylabel="Mean build time [ms]",
-    #     filename="build_time_mean_sd.png",
+    #     filename="build_time_mean_sd.pdf",
     #     kind="errorbar"
     # )
 
@@ -88,7 +92,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         metric="build_median_ms",
         title="Build time median + IQR",
         ylabel="Median build time [ms]",
-        filename="build_time_median_iqr.png",
+        filename="build_time_median_iqr.pdf",
         kind="plot",
         fill_between=("build_q1_ms", "build_q3_ms")
     )
@@ -100,7 +104,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     #     yerr="query_std_ms",
     #     title="Query time mean + SD",
     #     ylabel="Mean query time [ms]",
-    #     filename="query_time_mean_sd.png",
+    #     filename="query_time_mean_sd.pdf",
     #     kind="errorbar"
     # )
 
@@ -110,7 +114,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         metric="query_median_ms",
         title="Query time median + IQR",
         ylabel="Median query time [ms]",
-        filename="query_time_median_iqr.png",
+        filename="query_time_median_iqr.pdf",
         kind="plot",
         fill_between=("query_q1_ms", "query_q3_ms")
     )
@@ -122,7 +126,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     #     yerr="total_std_ms",
     #     title="Total time mean + SD",
     #     ylabel="Mean total time [ms]",
-    #     filename="total_time_mean_sd.png",
+    #     filename="total_time_mean_sd.pdf",
     #     kind="errorbar"
     # )
 
@@ -132,7 +136,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         metric="total_median_ms",
         title="Total time median + IQR",
         ylabel="Median total time [ms]",
-        filename="total_time_median_iqr.png",
+        filename="total_time_median_iqr.pdf",
         kind="plot",
         fill_between=("total_q1_ms", "total_q3_ms")
     )
@@ -144,7 +148,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     #     yerr="memory_std_kib",
     #     title="Peak memory mean + SD",
     #     ylabel="Mean peak memory [KiB]",
-    #     filename="peak_memory_mean_sd.png",
+    #     filename="peak_memory_mean_sd.pdf",
     #     kind="errorbar"
     # )
 
@@ -154,7 +158,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         metric="memory_median_kib",
         title="Peak memory median + IQR",
         ylabel="Median peak memory [KiB]",
-        filename="peak_memory_median_iqr.png",
+        filename="peak_memory_median_iqr.pdf",
         kind="plot",
         fill_between=("memory_q1_kib", "memory_q3_kib")
     )
@@ -166,7 +170,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     #     yerr="index_size_std_kib",
     #     title="Index size mean + SD",
     #     ylabel="Mean index size [KiB]",
-    #     filename="index_size_mean_sd.png",
+    #     filename="index_size_mean_sd.pdf",
     #     kind="errorbar"
     # )
     
@@ -176,7 +180,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         metric="index_size_median_kib",
         title="Index size median + IQR",
         ylabel="Median index size [KiB]",
-        filename="index_size_median_iqr.png",
+        filename="index_size_median_iqr.pdf",
         kind="plot",
         fill_between=("index_size_q1_kib", "index_size_q3_kib")
     )
@@ -188,7 +192,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     #     yerr="build_peak_memory_std_kib",
     #     title="Build peak memory mean + SD",
     #     ylabel="Mean build peak memory [KiB]",
-    #     filename="build_peak_memory_mean_sd.png",
+    #     filename="build_peak_memory_mean_sd.pdf",
     #     kind="errorbar"
     # )
 
@@ -198,7 +202,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         metric="build_peak_memory_median_kib",
         title="Build peak memory median + IQR",
         ylabel="Median build peak memory [KiB]",
-        filename="build_peak_memory_median_iqr.png",
+        filename="build_peak_memory_median_iqr.pdf",
         kind="plot",
         fill_between=("build_peak_memory_iqr_kib", "build_peak_memory_iqr_kib")
     )
@@ -210,7 +214,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     #     yerr="query_extra_memory_std_kib",
     #     title="Query extra memory mean + SD",
     #     ylabel="Mean query extra memory [KiB]",
-    #     filename="query_extra_memory_mean_sd.png",
+    #     filename="query_extra_memory_mean_sd.pdf",
     #     kind="errorbar"
     # )
 
@@ -220,7 +224,7 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         metric="query_extra_memory_median_kib",
         title="Query extra memory median + IQR",
         ylabel="Median query extra memory [KiB]",
-        filename="query_extra_memory_median_iqr.png",
+        filename="query_extra_memory_median_iqr.pdf",
         kind="plot",
         fill_between=("query_extra_memory_iqr_kib", "query_extra_memory_iqr_kib")
     )
