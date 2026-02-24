@@ -72,15 +72,15 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
         plt.close(fig)
 
     # Build time mean + SD
-    plot_metric_by_scenario(
-        summary_df,
-        metric="build_mean_ms",
-        yerr="build_std_ms",
-        title="Build time mean + SD",
-        ylabel="Mean build time [ms]",
-        filename="build_time_mean_sd.png",
-        kind="errorbar"
-    )
+    # plot_metric_by_scenario(
+    #     summary_df,
+    #     metric="build_mean_ms",
+    #     yerr="build_std_ms",
+    #     title="Build time mean + SD",
+    #     ylabel="Mean build time [ms]",
+    #     filename="build_time_mean_sd.png",
+    #     kind="errorbar"
+    # )
 
     # Build time median + IQR
     plot_metric_by_scenario(
@@ -94,15 +94,15 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     )
 
     # Query time mean + SD
-    plot_metric_by_scenario(
-        summary_df,
-        metric="query_mean_ms",
-        yerr="query_std_ms",
-        title="Query time mean + SD",
-        ylabel="Mean query time [ms]",
-        filename="query_time_mean_sd.png",
-        kind="errorbar"
-    )
+    # plot_metric_by_scenario(
+    #     summary_df,
+    #     metric="query_mean_ms",
+    #     yerr="query_std_ms",
+    #     title="Query time mean + SD",
+    #     ylabel="Mean query time [ms]",
+    #     filename="query_time_mean_sd.png",
+    #     kind="errorbar"
+    # )
 
     # Query time median + IQR
     plot_metric_by_scenario(
@@ -116,15 +116,15 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     )
 
     # Total time mean + SD
-    plot_metric_by_scenario(
-        summary_df,
-        metric="total_mean_ms",
-        yerr="total_std_ms",
-        title="Total time mean + SD",
-        ylabel="Mean total time [ms]",
-        filename="total_time_mean_sd.png",
-        kind="errorbar"
-    )
+    # plot_metric_by_scenario(
+    #     summary_df,
+    #     metric="total_mean_ms",
+    #     yerr="total_std_ms",
+    #     title="Total time mean + SD",
+    #     ylabel="Mean total time [ms]",
+    #     filename="total_time_mean_sd.png",
+    #     kind="errorbar"
+    # )
 
     # Total time median + IQR
     plot_metric_by_scenario(
@@ -138,15 +138,15 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     )
 
     # Peak memory mean + SD
-    plot_metric_by_scenario(
-        summary_df,
-        metric="memory_mean_kib",
-        yerr="memory_std_kib",
-        title="Peak memory mean + SD",
-        ylabel="Mean peak memory [KiB]",
-        filename="peak_memory_mean_sd.png",
-        kind="errorbar"
-    )
+    # plot_metric_by_scenario(
+    #     summary_df,
+    #     metric="memory_mean_kib",
+    #     yerr="memory_std_kib",
+    #     title="Peak memory mean + SD",
+    #     ylabel="Mean peak memory [KiB]",
+    #     filename="peak_memory_mean_sd.png",
+    #     kind="errorbar"
+    # )
 
     # Peak memory median + IQR
     plot_metric_by_scenario(
@@ -160,26 +160,37 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     )
 
     # Index size mean + SD
+    # plot_metric_by_scenario(
+    #     summary_df,
+    #     metric="index_size_mean_kib",
+    #     yerr="index_size_std_kib",
+    #     title="Index size mean + SD",
+    #     ylabel="Mean index size [KiB]",
+    #     filename="index_size_mean_sd.png",
+    #     kind="errorbar"
+    # )
+    
+    # Index size median + IQR
     plot_metric_by_scenario(
         summary_df,
-        metric="index_size_mean_kib",
-        yerr="index_size_std_kib",
-        title="Index size mean + SD",
-        ylabel="Mean index size [KiB]",
-        filename="index_size_mean_sd.png",
-        kind="errorbar"
+        metric="index_size_median_kib",
+        title="Index size median + IQR",
+        ylabel="Median index size [KiB]",
+        filename="index_size_median_iqr.png",
+        kind="plot",
+        fill_between=("index_size_q1_kib", "index_size_q3_kib")
     )
 
     # Build peak memory mean + SD
-    plot_metric_by_scenario(
-        summary_df,
-        metric="build_peak_memory_mean_kib",
-        yerr="build_peak_memory_std_kib",
-        title="Build peak memory mean + SD",
-        ylabel="Mean build peak memory [KiB]",
-        filename="build_peak_memory_mean_sd.png",
-        kind="errorbar"
-    )
+    # plot_metric_by_scenario(
+    #     summary_df,
+    #     metric="build_peak_memory_mean_kib",
+    #     yerr="build_peak_memory_std_kib",
+    #     title="Build peak memory mean + SD",
+    #     ylabel="Mean build peak memory [KiB]",
+    #     filename="build_peak_memory_mean_sd.png",
+    #     kind="errorbar"
+    # )
 
     # Build peak memory median + IQR
     plot_metric_by_scenario(
@@ -193,15 +204,15 @@ def export_plots(summary_df: pd.DataFrame, output_dir: Path) -> None:
     )
 
     # Query extra memory mean + SD
-    plot_metric_by_scenario(
-        summary_df,
-        metric="query_extra_memory_mean_kib",
-        yerr="query_extra_memory_std_kib",
-        title="Query extra memory mean + SD",
-        ylabel="Mean query extra memory [KiB]",
-        filename="query_extra_memory_mean_sd.png",
-        kind="errorbar"
-    )
+    # plot_metric_by_scenario(
+    #     summary_df,
+    #     metric="query_extra_memory_mean_kib",
+    #     yerr="query_extra_memory_std_kib",
+    #     title="Query extra memory mean + SD",
+    #     ylabel="Mean query extra memory [KiB]",
+    #     filename="query_extra_memory_mean_sd.png",
+    #     kind="errorbar"
+    # )
 
     # Query extra memory median + IQR
     plot_metric_by_scenario(

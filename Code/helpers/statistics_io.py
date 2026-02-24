@@ -65,6 +65,8 @@ def aggregate_results(raw_df: pd.DataFrame) -> pd.DataFrame:
         index_size_median_kib=("index_size_kib", "median"),
         index_size_std_kib=("index_size_kib", "std"),
         index_size_iqr_kib=("index_size_kib", iqr),
+        index_size_q1_kib=("index_size_kib", q1),
+        index_size_q3_kib=("index_size_kib", q3),
         lcs_mean_length=("lcs_length", "mean"),
         runs=("run", "count"),
     )
@@ -99,6 +101,9 @@ def export_latex_tables(summary_df: pd.DataFrame, output_dir: Path) -> None:
                     "query_peak_memory_median_kib",
                     "query_extra_memory_median_kib",
                     "index_size_median_kib",
+                    "index_size_iqr_kib",
+                    "index_size_q1_kib",
+                    "index_size_q3_kib",
                     "runs",
                 ]
             ].copy()
