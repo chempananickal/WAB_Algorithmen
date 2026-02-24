@@ -22,15 +22,24 @@ def measure_algorithm(
     s: str,
     t: str,
 ) -> tuple[float, float, float, float, float, float, LCSResult]:
-    """Return runtime and memory metrics plus LCS result.
+    """
+    Return runtime and memory metrics plus LCS result.
 
-    Metrics are:
-    - build runtime [ms]
-    - query runtime [ms]
-    - build phase peak memory [KiB]
-    - query phase peak memory [KiB]
-    - query extra peak over post-build baseline [KiB]
-    - deep size of built index structure [KiB]
+    Metrics explained:
+    - build_ms: Build runtime in milliseconds.
+    - query_ms: Query runtime in milliseconds.
+    - build_peak_kib: Peak memory usage (KiB) during build phase only.
+        This is the highest memory observed by tracemalloc right after building the index.
+    - query_peak_kib: Peak memory usage (KiB) during query phase only.
+        This is the highest memory observed by tracemalloc right after querying.
+    - peak_memory_kib: Peak memory usage (KiB) during the entire build+query process.
+        This is the maximum memory observed at any point from start to finish.
+    - query_extra_kib: Additional memory (KiB) allocated during query phase above the post-build baseline.
+        Calculated as the difference between query peak and build current memory.
+        This reflects how much extra memory is needed just for querying, not for building or storing the index.
+    - index_size_kib: Deep memory size (KiB) of the built index structure.
+        This is the sum of all objects recursively reachable from the index, measured after build.
+        It reflects the persistent memory footprint of the index, not including temporary allocations or interpreter overhead.
     """
 
     def deep_sizeof(obj: Any, seen: set[int] | None = None) -> int:
@@ -63,22 +72,29 @@ def measure_algorithm(
     built = build_fn(s, t)
     build_end = time.perf_counter_ns()
 
+    # Memory snapshot after build: current and peak
     build_current_bytes, build_peak_bytes = tracemalloc.get_traced_memory()
 
+    # Reset peak for query phase measurement
     tracemalloc.reset_peak()
 
+    # Query phase
     query_start = time.perf_counter_ns()
     result = query_fn(built, t)
     query_end = time.perf_counter_ns()
 
+    # Memory snapshot after query: peak
     _, query_peak_bytes = tracemalloc.get_traced_memory()
     tracemalloc.stop()
 
     build_ms = (build_end - build_start) / 1_000_000
     query_ms = (query_end - query_start) / 1_000_000
-    build_peak_kib = build_peak_bytes / 1024
-    query_peak_kib = query_peak_bytes / 1024
+    build_peak_kib = build_peak_bytes / 1024  # Peak during build only
+    query_peak_kib = query_peak_bytes / 1024  # Peak during query only
+    # Peak memory during build+query (for reporting, use max(build_peak_kib, query_peak_kib))
+    # Query extra memory: additional memory allocated during query above post-build baseline
     query_extra_kib = max(0.0, (query_peak_bytes - build_current_bytes) / 1024)
+    # Deep size of built index structure (persistent footprint)
     index_size_kib = deep_sizeof(built) / 1024
 
     return (

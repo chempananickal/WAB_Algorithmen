@@ -16,11 +16,18 @@ The \acrshort{lcs} problem can be solved using various algorithms, such as dynam
 Of particular interest are the \acrfull{sam} (also known as \acrfull{dawg}) and the \acrfull{sa} with \acrfull{lcp} Array (also known as an \acrfull{esa}), 
 which both yield the search result in linear time, but differ in their construction time and space requirements.
 
-Both of these data structures are derived from the Suffix Tree,, the first linear time and space data structure for solving the \acrshort{lcs} problem, 
-which was introduced by Peter Weiner in 1973 \cite{weiner}.
+Both of these data structures are derived from the Suffix Tree, the first linear time and space data structure for solving the \acrshort{lcs} problem, 
+which was introduced by Peter Weiner in 1973 \cite{weiner} as "bi-trees", although the uncompressed version he introduced is 
+currently referred to as a trie in order to differentiate it from the modern definition of a Suffix Tree, 
+which corresponds to the compressed version as described by McCreight in 1976 \cite{stdef}.
 
 \subsection{Suffix Tree}
-A Suffix Tree (originally called a bi-tree)
+
+A (compressed) Suffix Tree is constructed from a string \textit{S} using an algorithm, originally called Algorithm M, 
+mapping a finite string \textit{S} of characters into an auxiliary index to \textit{S} in the form of a 
+digital search tree \textit{T} whose paths are the suffixes of \textit{S}, and whose terminal nodes correspond uniquely to positions within \textit{S}\cite{stdef}.
+
+As the \acrlong{sam} and the \acrlong{esa} are both further refinements of the Suffix Tree, a Suffix Tree implementation will not be included in the comparisons done in this paper.
 
 \subsection{Suffix Automaton}
 
@@ -46,4 +53,26 @@ by traversing the automaton with the second string and keeping track of the long
   The generic name \textit{enhanced suffix array} stands for data structures consisting of the suffix array and additional tables.
 \end{displaycquote}
 
-\section{Research Questions}
+In this implementation, a \acrfull{esa} consists of a \acrfull{sa} and an \acrfull{lcp} Array, 
+which is all that's necessary to solve the \acrshort{lcs} problem in linear time because the \acrshort{lcs} can be solved by 
+finding the maximum value in the \acrshort{lcp} Array corresponding to suffixes (from the \acrshort{sa}) that belong to different strings.
+
+The \acrshort{lcp} Array will be constructed using Kasai's algorithm\cite{kasai}, 
+which is a linear time algorithm for constructing the \acrshort{lcp} Array from the \acrshort{sa}.
+
+\section{Motivation}
+
+Although there have been many papers comparing either the \acrshort{sam} or the \acrshort{esa} to the Suffix Tree, 
+there is a lack of direct comparisons between these two data structures,
+even though they both solve the same problem using the same underlying principle of representing the suffixes of a string in a compact way.
+
+Moreover, there is a lack of practical comparisons between these two structures in the context of specific programming languages,
+as the obtuse memory management of languages like Python could potentially lead to real-world results not matching up with theoretical expectations, especially when it comes to space usage.
+
+\section{Research Question}
+The primary research question of this paper is:
+\begin{quote}
+  How do the \acrlong{sam} and the \acrfull{esa} compare in terms of time and space complexity when solving the \acrlong{lcs} problem in an everyday programming context?
+\end{quote}
+
+Python\cite{python} was chosen as the programming language for this paper due to the fact that it is by far the most popular programming language for bioinformatics \cite{pythonproof}.
