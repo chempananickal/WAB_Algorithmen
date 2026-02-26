@@ -22,8 +22,35 @@
 \hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black}
 \setlength{\parskip}{1em}
 
+% Reduce space before/after chapter, section, and subsection headings
+\RedeclareSectionCommand[
+  beforeskip=1em,
+  afterskip=1em
+]{chapter}
+\RedeclareSectionCommand[
+  beforeskip=0.5em,
+  afterskip=0.5em
+]{section}
+\RedeclareSectionCommand[
+  beforeskip=0.5em,
+  afterskip=0.5em
+]{subsection}
+
 \addbibresource{references.bib}
 \makeglossaries
+
+% Custom environment for benchmark tables
+% Wraps tabularx tables without caption (won't appear in list of tables)
+\newenvironment{benchmarktable}[2]{% #1=title, #2=description
+    \begin{table}[H]%
+        \small%
+        \raggedright%
+        \textbf{#1}\\%
+        \textit{#2}\\[4pt]%
+        \centering%
+}{%
+    \end{table}%
+}
 
 % Make \cite produce footnotes
 % \let\cite\footcite

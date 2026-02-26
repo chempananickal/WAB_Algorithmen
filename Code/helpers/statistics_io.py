@@ -81,173 +81,107 @@ def aggregate_results(raw_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def export_latex_tables(summary_df: pd.DataFrame, output_dir: Path) -> None:
+    """Export clean tabular tables. LaTeX handles formatting via custom commands."""
     tables_dir = output_dir / "tables"
     tables_dir.mkdir(parents=True, exist_ok=True)
-    # Split tables into smaller, sensible groups so they fit in LaTeX documents.
-    # Further subdivide into narrow tables (build/query/total times, memory groups, index).
+    
     groups = {
         "build_time": (
-            [
-                "length",
-                "build_mean_ms",
-                "build_std_ms",
-                "build_median_ms",
-                "build_iqr_ms",
-                "runs",
-            ],
-            [
-                "Length",
-                "Build Mean (ms)",
-                "Build SD (ms)",
-                "Build Median (ms)",
-                "Build IQR (ms)",
-                "Runs",
-            ],
+            ["length", "build_mean_ms", "build_std_ms", "build_median_ms", "build_iqr_ms"],
+            ["Length", "Build Time Mean (ms)", "Build Time SD (ms)", "Build Time Median (ms)", "Build Time IQR (ms)"],
         ),
         "query_time": (
-            [
-                "length",
-                "query_mean_ms",
-                "query_std_ms",
-                "query_median_ms",
-                "query_iqr_ms",
-                "runs",
-            ],
-            [
-                "Length",
-                "Query Mean (ms)",
-                "Query SD (ms)",
-                "Query Median (ms)",
-                "Query IQR (ms)",
-                "Runs",
-            ],
+            ["length", "query_mean_ms", "query_std_ms", "query_median_ms", "query_iqr_ms"],
+            ["Length", "Query Time Mean (ms)", "Query Time SD (ms)", "Query Time Median (ms)", "Query Time IQR (ms)"],
         ),
         "total_time": (
-            [
-                "length",
-                "total_mean_ms",
-                "total_std_ms",
-                "total_median_ms",
-                "total_iqr_ms",
-                "runs",
-            ],
-            [
-                "Length",
-                "Total Mean (ms)",
-                "Total SD (ms)",
-                "Total Median (ms)",
-                "Total IQR (ms)",
-                "Runs",
-            ],
-        ),
-        "memory_overall": (
-            [
-                "length",
-                "memory_mean_kib",
-                "memory_std_kib",
-                "memory_median_kib",
-                "memory_iqr_kib",
-            ],
-            [
-                "Length",
-                "Memory Mean (KiB)",
-                "Memory SD (KiB)",
-                "Memory Median (KiB)",
-                "Memory IQR (KiB)",
-            ],
+            ["length", "total_mean_ms", "total_std_ms", "total_median_ms", "total_iqr_ms"],
+            ["Length", "Total Time Mean (ms)", "Total Time SD (ms)", "Total Time Median (ms)", "Total Time IQR (ms)"],
         ),
         "build_peak_memory": (
-            [
-                "length",
-                "build_peak_memory_mean_kib",
-                "build_peak_memory_std_kib",
-                "build_peak_memory_median_kib",
-                "build_peak_memory_iqr_kib",
-            ],
-            [
-                "Length",
-                "BPM Mean (KiB)",
-                "BPM SD (KiB)",
-                "BPM Median (KiB)",
-                "BPM IQR (KiB)",
-            ],
+            ["length", "build_peak_memory_mean_kib", "build_peak_memory_std_kib", "build_peak_memory_median_kib", "build_peak_memory_iqr_kib"],
+            ["Length", "Build Peak Memory Mean (KiB)", "Build Peak Memory SD (KiB)", "Build Peak Memory Median (KiB)", "Build Peak Memory IQR (KiB)"],
         ),
         "query_peak_memory": (
-            [
-                "length",
-                "query_peak_memory_mean_kib",
-                "query_peak_memory_std_kib",
-                "query_peak_memory_median_kib",
-                "query_peak_memory_iqr_kib",
-            ],
-            [
-                "Length",
-                "QPM Mean (KiB)",
-                "QPM SD (KiB)",
-                "QPM Median (KiB)",
-                "QPM IQR (KiB)",
-            ],
+            ["length", "query_peak_memory_mean_kib", "query_peak_memory_std_kib", "query_peak_memory_median_kib", "query_peak_memory_iqr_kib"],
+            ["Length", "Query Peak Memory Mean (KiB)", "Query Peak Memory SD (KiB)", "Query Peak Memory Median (KiB)", "Query Peak Memory IQR (KiB)"],
         ),
         "query_extra_memory": (
-            [
-                "length",
-                "query_extra_memory_mean_kib",
-                "query_extra_memory_std_kib",
-                "query_extra_memory_median_kib",
-                "query_extra_memory_iqr_kib",
-            ],
-            [
-                "Length",
-                "QEM Mean (KiB)",
-                "QEM SD (KiB)",
-                "QEM Median (KiB)",
-                "QEM IQR (KiB)",
-            ],
+            ["length", "query_extra_memory_mean_kib", "query_extra_memory_std_kib", "query_extra_memory_median_kib", "query_extra_memory_iqr_kib"],
+            ["Length", "Query Extra Memory Mean (KiB)", "Query Extra Memory SD (KiB)", "Query Extra Memory Median (KiB)", "Query Extra Memory IQR (KiB)"],
         ),
-        "index": (
-            [
-                "length",
-                "index_size_mean_kib",
-                "index_size_std_kib",
-                "index_size_median_kib",
-                "index_size_iqr_kib",
-            ],
-            [
-                "Length",
-                "IDX Mean (KiB)",
-                "IDX SD (KiB)",
-                "IDX Median (KiB)",
-                "IDX IQR (KiB)",
-            ],
+        "index_size": (
+            ["length", "index_size_mean_kib", "index_size_std_kib", "index_size_median_kib", "index_size_iqr_kib"],
+            ["Length", "Index Size Mean (KiB)", "Index Size SD (KiB)", "Index Size Median (KiB)", "Index Size IQR (KiB)"],
         ),
     }
 
     for scenario, scenario_df in summary_df.groupby("scenario"):
-        # Build one combined file per scenario containing all groups (times, memory, index).
         per_scenario_parts: list[str] = []
+        
         for group_name, (columns, col_titles) in groups.items():
-            subtables: list[str] = []
-            for algorithm, algo_df in scenario_df.groupby("algorithm"):
-                compact = algo_df[columns].copy()
-                compact.columns = col_titles
-                safe_algo = algorithm.replace(" ", "_").lower()
-                tabular = compact.to_latex(index=False, float_format=lambda x: f"{x:.4f}")
-                alg_esc = algorithm.replace("_", "\\_")
-                scen_esc = scenario.replace("_", "\\_")
-                title = f"{alg_esc} ({group_name.replace('_', ' ').title()})"
-                description = f"Condensed results for {alg_esc} in scenario {scen_esc}."
-                latex = (
-                    "\\begin{table}[H]\\centering\\small\n"
-                    + f"\\textbf{{{title}}}\\\\\n"
-                    + f"\\textit{{{description}}}\\\\[4pt]\n"
-                    + tabular
-                    + "\\end{table}"
-                )
-                subtables.append(latex)
-
-            group_full = "\n\n".join(subtables)
-            # Add a small LaTeX comment as a separator so it's easy to split/input later.
-            per_scenario_parts.append(f"% ===== group: {group_name.replace('_', ' ').title()} =====\n" + group_full)
+            # Combine both algorithms into one table for direct comparison
+            # Add algorithm column for clarity
+            compact = scenario_df[["algorithm"] + columns].copy()
+            compact.columns = ["Algorithm"] + col_titles
+            
+            # Abbreviate algorithm names to save space
+            compact["Algorithm"] = compact["Algorithm"].replace({
+                "Enhanced Suffix Array": "ESA",
+                "Suffix Automaton": "SAM"
+            })
+            
+            ncols = len(compact.columns)
+            
+            # Sort by length then algorithm for easy comparison
+            compact = compact.sort_values(by=["Length", "Algorithm"]).reset_index(drop=True)
+            
+            # Export table with pandas, then convert to tabularx
+            table_tex = compact.to_latex(
+                index=False,
+                float_format=lambda x: f"{x:.4f}",
+                escape=False
+            )
+            
+            # Convert tabular to tabularx with column dividers
+            import re
+            col_spec = '|' + '|'.join(['X'] * ncols) + '|'
+            table_tex = re.sub(
+                r'\\begin\{tabular\}\{[^}]+\}',
+                r'\\begin{tabularx}{\\textwidth}{' + col_spec + r'}',
+                table_tex
+            )
+            table_tex = table_tex.replace(r'\end{tabular}', r'\end{tabularx}')
+            
+            # Add horizontal line after each SAM row (but not before \bottomrule)
+            table_tex = re.sub(
+                r'(SAM & .+? \\\\)\n(?!\\bottomrule)',
+                r'\1\n\\hline\n',
+                table_tex
+            )
+            
+            # Metadata
+            scen_esc = scenario.replace("_", "\\_")
+            title = f"{group_name.replace('_', ' ').title()} Comparison"
+            
+            # Useful description: sample size + interpretation hint
+            is_timing = "time" in group_name
+            is_memory = "memory" in group_name or "index" in group_name
+            if is_timing:
+                description = "Based on 500 benchmark runs per input length. Times in milliseconds; lower is better."
+            elif is_memory:
+                description = "Based on 500 benchmark runs per input length. Memory in KiB; lower is better."
+            else:
+                description = "Based on 500 benchmark runs per input length."
+            
+            # Use custom LaTeX environment (defined in settings.tex)
+            latex = (
+                f"\\begin{{benchmarktable}}{{{title}}}{{{description}}}\n"
+                + table_tex
+                + "\\end{benchmarktable}"
+            )
+            
+            per_scenario_parts.append(f"% ===== group: {group_name.replace('_', ' ').title()} =====\n" + latex)
 
         combined = "\n\n".join(per_scenario_parts)
         (tables_dir / f"summary_{scenario}.tex").write_text(combined, encoding="utf-8")

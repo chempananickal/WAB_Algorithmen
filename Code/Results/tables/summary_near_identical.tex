@@ -1,263 +1,167 @@
 % ===== group: Build Time =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Build Time)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
+\begin{benchmarktable}{Build Time Comparison}{Based on 500 benchmark runs per input length. Times in milliseconds; lower is better.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \toprule
-Length & Build Mean (ms) & Build SD (ms) & Build Median (ms) & Build IQR (ms) & Runs \\
+Algorithm & Length & Build Time Mean (ms) & Build Time SD (ms) & Build Time Median (ms) & Build Time IQR (ms) \\
 \midrule
-100 & 0.8973 & 0.2670 & 0.8299 & 0.0721 & 500 \\
-500 & 28.7797 & 3.8677 & 28.6069 & 1.2660 & 500 \\
-1000 & 72.0393 & 3.9829 & 71.6989 & 3.5016 & 500 \\
-5000 & 436.3448 & 32.8775 & 429.1522 & 15.7043 & 500 \\
-10000 & 917.2661 & 32.8563 & 914.5540 & 27.2977 & 500 \\
+ESA & 100 & 0.8973 & 0.2670 & 0.8299 & 0.0721 \\
+SAM & 100 & 0.2219 & 0.0571 & 0.2083 & 0.0194 \\
+\hline
+ESA & 500 & 28.7797 & 3.8677 & 28.6069 & 1.2660 \\
+SAM & 500 & 1.7730 & 0.3135 & 1.6721 & 0.1911 \\
+\hline
+ESA & 1000 & 72.0393 & 3.9829 & 71.6989 & 3.5016 \\
+SAM & 1000 & 4.0787 & 0.3182 & 4.0387 & 0.2440 \\
+\hline
+ESA & 5000 & 436.3448 & 32.8775 & 429.1522 & 15.7043 \\
+SAM & 5000 & 20.1832 & 2.5592 & 19.9330 & 1.6187 \\
+\hline
+ESA & 10000 & 917.2661 & 32.8563 & 914.5540 & 27.2977 \\
+SAM & 10000 & 43.1988 & 2.6354 & 43.3967 & 2.8946 \\
 \bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Build Time)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
-\toprule
-Length & Build Mean (ms) & Build SD (ms) & Build Median (ms) & Build IQR (ms) & Runs \\
-\midrule
-100 & 0.2219 & 0.0571 & 0.2083 & 0.0194 & 500 \\
-500 & 1.7730 & 0.3135 & 1.6721 & 0.1911 & 500 \\
-1000 & 4.0787 & 0.3182 & 4.0387 & 0.2440 & 500 \\
-5000 & 20.1832 & 2.5592 & 19.9330 & 1.6187 & 500 \\
-10000 & 43.1988 & 2.6354 & 43.3967 & 2.8946 & 500 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{tabularx}
+\end{benchmarktable}
 
 % ===== group: Query Time =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Query Time)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
+\begin{benchmarktable}{Query Time Comparison}{Based on 500 benchmark runs per input length. Times in milliseconds; lower is better.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \toprule
-Length & Query Mean (ms) & Query SD (ms) & Query Median (ms) & Query IQR (ms) & Runs \\
+Algorithm & Length & Query Time Mean (ms) & Query Time SD (ms) & Query Time Median (ms) & Query Time IQR (ms) \\
 \midrule
-100 & 0.0592 & 0.0214 & 0.0548 & 0.0095 & 500 \\
-500 & 1.3001 & 0.1472 & 1.2532 & 0.0632 & 500 \\
-1000 & 2.9253 & 0.3626 & 2.8856 & 0.1385 & 500 \\
-5000 & 15.5071 & 1.1774 & 15.2848 & 0.6238 & 500 \\
-10000 & 31.5783 & 1.9220 & 31.4201 & 1.1969 & 500 \\
+ESA & 100 & 0.0592 & 0.0214 & 0.0548 & 0.0095 \\
+SAM & 100 & 0.3424 & 0.0579 & 0.3204 & 0.0285 \\
+\hline
+ESA & 500 & 1.3001 & 0.1472 & 1.2532 & 0.0632 \\
+SAM & 500 & 2.5607 & 0.1944 & 2.5114 & 0.1640 \\
+\hline
+ESA & 1000 & 2.9253 & 0.3626 & 2.8856 & 0.1385 \\
+SAM & 1000 & 6.1874 & 0.4308 & 6.1105 & 0.4002 \\
+\hline
+ESA & 5000 & 15.5071 & 1.1774 & 15.2848 & 0.6238 \\
+SAM & 5000 & 35.6452 & 4.7441 & 35.0750 & 1.5872 \\
+\hline
+ESA & 10000 & 31.5783 & 1.9220 & 31.4201 & 1.1969 \\
+SAM & 10000 & 77.5589 & 3.7466 & 77.3678 & 2.9818 \\
 \bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Query Time)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
-\toprule
-Length & Query Mean (ms) & Query SD (ms) & Query Median (ms) & Query IQR (ms) & Runs \\
-\midrule
-100 & 0.3424 & 0.0579 & 0.3204 & 0.0285 & 500 \\
-500 & 2.5607 & 0.1944 & 2.5114 & 0.1640 & 500 \\
-1000 & 6.1874 & 0.4308 & 6.1105 & 0.4002 & 500 \\
-5000 & 35.6452 & 4.7441 & 35.0750 & 1.5872 & 500 \\
-10000 & 77.5589 & 3.7466 & 77.3678 & 2.9818 & 500 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{tabularx}
+\end{benchmarktable}
 
 % ===== group: Total Time =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Total Time)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
+\begin{benchmarktable}{Total Time Comparison}{Based on 500 benchmark runs per input length. Times in milliseconds; lower is better.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \toprule
-Length & Total Mean (ms) & Total SD (ms) & Total Median (ms) & Total IQR (ms) & Runs \\
+Algorithm & Length & Total Time Mean (ms) & Total Time SD (ms) & Total Time Median (ms) & Total Time IQR (ms) \\
 \midrule
-100 & 0.9566 & 0.2782 & 0.8846 & 0.0788 & 500 \\
-500 & 30.0799 & 3.9293 & 29.9108 & 1.2967 & 500 \\
-1000 & 74.9646 & 4.0878 & 74.6613 & 3.7002 & 500 \\
-5000 & 451.8520 & 33.8624 & 444.4871 & 16.2480 & 500 \\
-10000 & 948.8444 & 34.0679 & 946.0367 & 28.3186 & 500 \\
+ESA & 100 & 0.9566 & 0.2782 & 0.8846 & 0.0788 \\
+SAM & 100 & 0.5643 & 0.1049 & 0.5343 & 0.0458 \\
+\hline
+ESA & 500 & 30.0799 & 3.9293 & 29.9108 & 1.2967 \\
+SAM & 500 & 4.3337 & 0.4158 & 4.2065 & 0.4002 \\
+\hline
+ESA & 1000 & 74.9646 & 4.0878 & 74.6613 & 3.7002 \\
+SAM & 1000 & 10.2660 & 0.6157 & 10.1860 & 0.5347 \\
+\hline
+ESA & 5000 & 451.8520 & 33.8624 & 444.4871 & 16.2480 \\
+SAM & 5000 & 55.8285 & 6.4827 & 54.9929 & 2.8518 \\
+\hline
+ESA & 10000 & 948.8444 & 34.0679 & 946.0367 & 28.3186 \\
+SAM & 10000 & 120.7577 & 6.1184 & 120.8392 & 5.2513 \\
 \bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Total Time)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
-\toprule
-Length & Total Mean (ms) & Total SD (ms) & Total Median (ms) & Total IQR (ms) & Runs \\
-\midrule
-100 & 0.5643 & 0.1049 & 0.5343 & 0.0458 & 500 \\
-500 & 4.3337 & 0.4158 & 4.2065 & 0.4002 & 500 \\
-1000 & 10.2660 & 0.6157 & 10.1860 & 0.5347 & 500 \\
-5000 & 55.8285 & 6.4827 & 54.9929 & 2.8518 & 500 \\
-10000 & 120.7577 & 6.1184 & 120.8392 & 5.2513 & 500 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-% ===== group: Memory Overall =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Memory Overall)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
-\toprule
-Length & Memory Mean (KiB) & Memory SD (KiB) & Memory Median (KiB) & Memory IQR (KiB) \\
-\midrule
-100 & 19.7698 & 0.4242 & 19.7598 & 0.6875 \\
-500 & 122.9600 & 0.8263 & 123.2051 & 0.8828 \\
-1000 & 268.5878 & 1.5279 & 268.3926 & 1.0078 \\
-5000 & 1507.8776 & 11.8780 & 1509.4785 & 18.1016 \\
-10000 & 3048.2410 & 11.0266 & 3046.9082 & 10.7422 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Memory Overall)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
-\toprule
-Length & Memory Mean (KiB) & Memory SD (KiB) & Memory Median (KiB) & Memory IQR (KiB) \\
-\midrule
-100 & 14.3064 & 0.5256 & 14.4971 & 0.9219 \\
-500 & 144.3398 & 1.2458 & 144.3369 & 1.8926 \\
-1000 & 324.8686 & 1.4894 & 324.5850 & 1.7168 \\
-5000 & 1655.9121 & 3.1172 & 1654.9795 & 4.7598 \\
-10000 & 3402.6903 & 4.6552 & 3402.6357 & 7.2949 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{tabularx}
+\end{benchmarktable}
 
 % ===== group: Build Peak Memory =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Build Peak Memory)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
+\begin{benchmarktable}{Build Peak Memory Comparison}{Based on 500 benchmark runs per input length. Memory in KiB; lower is better.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \toprule
-Length & BPM Mean (KiB) & BPM SD (KiB) & BPM Median (KiB) & BPM IQR (KiB) \\
+Algorithm & Length & Build Peak Memory Mean (KiB) & Build Peak Memory SD (KiB) & Build Peak Memory Median (KiB) & Build Peak Memory IQR (KiB) \\
 \midrule
-100 & 19.7698 & 0.4242 & 19.7598 & 0.6875 \\
-500 & 122.9600 & 0.8263 & 123.2051 & 0.8828 \\
-1000 & 268.5878 & 1.5279 & 268.3926 & 1.0078 \\
-5000 & 1507.8776 & 11.8780 & 1509.4785 & 18.1016 \\
-10000 & 3048.2410 & 11.0266 & 3046.9082 & 10.7422 \\
+ESA & 100 & 19.7698 & 0.4242 & 19.7598 & 0.6875 \\
+SAM & 100 & 13.7309 & 0.5255 & 13.9219 & 0.9219 \\
+\hline
+ESA & 500 & 122.9600 & 0.8263 & 123.2051 & 0.8828 \\
+SAM & 500 & 142.9375 & 1.2450 & 142.9375 & 1.8828 \\
+\hline
+ESA & 1000 & 268.5878 & 1.5279 & 268.3926 & 1.0078 \\
+SAM & 1000 & 322.5197 & 1.4953 & 322.2227 & 1.6875 \\
+\hline
+ESA & 5000 & 1507.8776 & 11.8780 & 1509.4785 & 18.1016 \\
+SAM & 5000 & 1645.8894 & 3.1171 & 1644.9648 & 4.7539 \\
+\hline
+ESA & 10000 & 3048.2410 & 11.0266 & 3046.9082 & 10.7422 \\
+SAM & 10000 & 3383.0981 & 4.6633 & 3383.0508 & 7.2930 \\
 \bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Build Peak Memory)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
-\toprule
-Length & BPM Mean (KiB) & BPM SD (KiB) & BPM Median (KiB) & BPM IQR (KiB) \\
-\midrule
-100 & 13.7309 & 0.5255 & 13.9219 & 0.9219 \\
-500 & 142.9375 & 1.2450 & 142.9375 & 1.8828 \\
-1000 & 322.5197 & 1.4953 & 322.2227 & 1.6875 \\
-5000 & 1645.8894 & 3.1171 & 1644.9648 & 4.7539 \\
-10000 & 3383.0981 & 4.6633 & 3383.0508 & 7.2930 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{tabularx}
+\end{benchmarktable}
 
 % ===== group: Query Peak Memory =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Query Peak Memory)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
+\begin{benchmarktable}{Query Peak Memory Comparison}{Based on 500 benchmark runs per input length. Memory in KiB; lower is better.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \toprule
-Length & QPM Mean (KiB) & QPM SD (KiB) & QPM Median (KiB) & QPM IQR (KiB) \\
+Algorithm & Length & Query Peak Memory Mean (KiB) & Query Peak Memory SD (KiB) & Query Peak Memory Median (KiB) & Query Peak Memory IQR (KiB) \\
 \midrule
-100 & 4.8014 & 0.0496 & 4.7881 & 0.0020 \\
-500 & 50.0279 & 0.0776 & 49.9873 & 0.0654 \\
-1000 & 113.4915 & 0.0844 & 113.4805 & 0.0664 \\
-5000 & 631.4863 & 0.3430 & 631.3613 & 0.2324 \\
-10000 & 1280.3577 & 0.6053 & 1280.2090 & 0.0791 \\
+ESA & 100 & 4.8014 & 0.0496 & 4.7881 & 0.0020 \\
+SAM & 100 & 14.3064 & 0.5256 & 14.4971 & 0.9219 \\
+\hline
+ESA & 500 & 50.0279 & 0.0776 & 49.9873 & 0.0654 \\
+SAM & 500 & 144.3398 & 1.2458 & 144.3369 & 1.8926 \\
+\hline
+ESA & 1000 & 113.4915 & 0.0844 & 113.4805 & 0.0664 \\
+SAM & 1000 & 324.8686 & 1.4894 & 324.5850 & 1.7168 \\
+\hline
+ESA & 5000 & 631.4863 & 0.3430 & 631.3613 & 0.2324 \\
+SAM & 5000 & 1655.9121 & 3.1172 & 1654.9795 & 4.7598 \\
+\hline
+ESA & 10000 & 1280.3577 & 0.6053 & 1280.2090 & 0.0791 \\
+SAM & 10000 & 3402.6903 & 4.6552 & 3402.6357 & 7.2949 \\
 \bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Query Peak Memory)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
-\toprule
-Length & QPM Mean (KiB) & QPM SD (KiB) & QPM Median (KiB) & QPM IQR (KiB) \\
-\midrule
-100 & 14.3064 & 0.5256 & 14.4971 & 0.9219 \\
-500 & 144.3398 & 1.2458 & 144.3369 & 1.8926 \\
-1000 & 324.8686 & 1.4894 & 324.5850 & 1.7168 \\
-5000 & 1655.9121 & 3.1172 & 1654.9795 & 4.7598 \\
-10000 & 3402.6903 & 4.6552 & 3402.6357 & 7.2949 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{tabularx}
+\end{benchmarktable}
 
 % ===== group: Query Extra Memory =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Query Extra Memory)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
+\begin{benchmarktable}{Query Extra Memory Comparison}{Based on 500 benchmark runs per input length. Memory in KiB; lower is better.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \toprule
-Length & QEM Mean (KiB) & QEM SD (KiB) & QEM Median (KiB) & QEM IQR (KiB) \\
+Algorithm & Length & Query Extra Memory Mean (KiB) & Query Extra Memory SD (KiB) & Query Extra Memory Median (KiB) & Query Extra Memory IQR (KiB) \\
 \midrule
-100 & 0.8066 & 0.0093 & 0.8096 & 0.0010 \\
-500 & 1.6002 & 0.0159 & 1.6064 & 0.0078 \\
-1000 & 2.5558 & 0.0223 & 2.5635 & 0.0039 \\
-5000 & 10.2275 & 0.0206 & 10.2217 & 0.0068 \\
-10000 & 19.7919 & 0.0430 & 19.7900 & 0.0029 \\
+ESA & 100 & 0.8066 & 0.0093 & 0.8096 & 0.0010 \\
+SAM & 100 & 0.8958 & 0.0007 & 0.8955 & 0.0000 \\
+\hline
+ESA & 500 & 1.6002 & 0.0159 & 1.6064 & 0.0078 \\
+SAM & 500 & 1.7226 & 0.0043 & 1.7197 & 0.0039 \\
+\hline
+ESA & 1000 & 2.5558 & 0.0223 & 2.5635 & 0.0039 \\
+SAM & 1000 & 2.6792 & 0.0028 & 2.6787 & 0.0039 \\
+\hline
+ESA & 5000 & 10.2275 & 0.0206 & 10.2217 & 0.0068 \\
+SAM & 5000 & 10.3430 & 0.0195 & 10.3350 & 0.0059 \\
+\hline
+ESA & 10000 & 19.7919 & 0.0430 & 19.7900 & 0.0029 \\
+SAM & 10000 & 19.9125 & 0.0334 & 19.9033 & 0.0020 \\
 \bottomrule
-\end{tabular}
-\end{table}
+\end{tabularx}
+\end{benchmarktable}
 
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Query Extra Memory)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrr}
+% ===== group: Index Size =====
+\begin{benchmarktable}{Index Size Comparison}{Based on 500 benchmark runs per input length. Memory in KiB; lower is better.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|}
 \toprule
-Length & QEM Mean (KiB) & QEM SD (KiB) & QEM Median (KiB) & QEM IQR (KiB) \\
+Algorithm & Length & Index Size Mean (KiB) & Index Size SD (KiB) & Index Size Median (KiB) & Index Size IQR (KiB) \\
 \midrule
-100 & 0.8958 & 0.0007 & 0.8955 & 0.0000 \\
-500 & 1.7226 & 0.0043 & 1.7197 & 0.0039 \\
-1000 & 2.6792 & 0.0028 & 2.6787 & 0.0039 \\
-5000 & 10.3430 & 0.0195 & 10.3350 & 0.0059 \\
-10000 & 19.9125 & 0.0334 & 19.9033 & 0.0020 \\
+ESA & 100 & 9.2715 & 0.0000 & 9.2715 & 0.0000 \\
+SAM & 100 & 32.1459 & 0.5796 & 32.3750 & 0.9727 \\
+\hline
+ESA & 500 & 51.4252 & 0.0605 & 51.3848 & 0.0547 \\
+SAM & 500 & 163.9070 & 1.2450 & 163.9102 & 1.8828 \\
+\hline
+ESA & 1000 & 108.1062 & 0.0389 & 108.0996 & 0.0547 \\
+SAM & 1000 & 341.5261 & 1.4898 & 341.2422 & 1.7227 \\
+\hline
+ESA & 5000 & 571.8373 & 0.2732 & 571.7246 & 0.0820 \\
+SAM & 5000 & 1649.2808 & 3.1171 & 1648.3594 & 4.7539 \\
+\hline
+ESA & 10000 & 1152.9190 & 0.4672 & 1152.7910 & 0.0273 \\
+SAM & 10000 & 3366.9583 & 4.6633 & 3366.9141 & 7.2930 \\
 \bottomrule
-\end{tabular}
-\end{table}
-
-% ===== group: Index =====
-\begin{table}[H]\centering\small
-\textbf{Enhanced Suffix Array (Index)}\\
-\textit{Condensed results for Enhanced Suffix Array in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
-\toprule
-Length & IDX Mean (KiB) & IDX SD (KiB) & IDX Median (KiB) & IDX IQR (KiB) & LCS Mean Length \\
-\midrule
-100 & 9.2715 & 0.0000 & 9.2715 & 0.0000 & 98.1600 \\
-500 & 51.4252 & 0.0605 & 51.3848 & 0.0547 & 491.4800 \\
-1000 & 108.1062 & 0.0389 & 108.0996 & 0.0547 & 981.2400 \\
-5000 & 571.8373 & 0.2732 & 571.7246 & 0.0820 & 4905.1200 \\
-10000 & 1152.9190 & 0.4672 & 1152.7910 & 0.0273 & 9804.6800 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]\centering\small
-\textbf{Suffix Automaton (Index)}\\
-\textit{Condensed results for Suffix Automaton in scenario near\_identical.}\\[4pt]
-\begin{tabular}{rrrrrr}
-\toprule
-Length & IDX Mean (KiB) & IDX SD (KiB) & IDX Median (KiB) & IDX IQR (KiB) & LCS Mean Length \\
-\midrule
-100 & 32.1459 & 0.5796 & 32.3750 & 0.9727 & 98.1600 \\
-500 & 163.9070 & 1.2450 & 163.9102 & 1.8828 & 491.4800 \\
-1000 & 341.5261 & 1.4898 & 341.2422 & 1.7227 & 981.2400 \\
-5000 & 1649.2808 & 3.1171 & 1648.3594 & 4.7539 & 4905.1200 \\
-10000 & 3366.9583 & 4.6633 & 3366.9141 & 7.2930 & 9804.6800 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{tabularx}
+\end{benchmarktable}
