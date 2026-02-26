@@ -21,10 +21,22 @@ The same generated string pair is always benchmarked with both algorithms.
 
 ## Run
 
-From the workspace root:
+First, create a venv or conda environment and install dependencies:
+
+```bash
+pip install -r Code/requirements.txt
+```
+
+Then, from the workspace root:
 
 ```bash
 python Code/benchmark_lcs.py --lengths 100,250,500,1000,2000 --cases-per-length 5 --runs 100 --seed 42
+```
+
+If you wish to plot already existing results, you can run:
+
+```bash
+python Code/benchmark_lcs.py --mode plot
 ```
 
 ## Output
@@ -35,11 +47,11 @@ By default, outputs are written to `Code/results/`:
 - `case_lcs_values.csv` (each generated string pair `s`, `t`, plus all LCS value(s))
 - `summary_stats.csv` (mean, median, std, IQR, min, max)
 - `tables/summary_<scenario>.tex` (LaTeX tables)
-- `plots/benchmark_<scenario>.png` (runtime + memory graphs)
+- `plots/<scenario>_<stats>.png` (runtime + memory graphs)
 - `benchmark_config.txt` (used settings)
 
 ## Notes
 
 - Runtime is measured with `time.perf_counter_ns`.
 - Peak memory is measured with `tracemalloc`.
-- A correctness check ensures both algorithms return the same LCS length for every run.
+- A correctness check ensures both algorithms return the same LCS value(s).
