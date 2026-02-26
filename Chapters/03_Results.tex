@@ -1,0 +1,47 @@
+\chapter{Results}
+% Write your results here.
+
+\section{Choice of Central Tendency}
+The data collected seems to be heavily right-skewed, with some outliers. This is irrespective of the scenario, string length, algorithm, 
+or even the type of measurement (build time, query time, total time, or memory usage).
+
+This is likely due to cache misses, other background processes running on the computer, 
+or other random factors that can affect the performance of the algorithms in a non-deterministic way.
+Therefore, the median was chosen as the measure of central tendency for the results, 
+as the data is not normally distributed and the median is more robust to outliers than the mean.
+And since the median is being used, the interquartile range (IQR) was chosen as the measure of variability.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Code/Results/plots/distribution_plot.pdf}
+    \caption{Distribution of total time for the \acrshort{sam} and the \acrshort{esa} for the random uniform scenario and string length 10000, as an example of the right-skewed nature of the data}
+    \label{fig:distribution_plot}
+\end{figure}
+
+\section{Time}
+The time taken to construct the \acrshort{sam} and the \acrshort{esa} and to find the \acrshort{lcs} was measured for each scenario and string length, 
+and the results are shown in the following plots.
+
+\subsection{Build Time}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Code/Results/plots/build_time_median_iqr.pdf}
+    \caption{Median and interquartile range of build time for the \acrshort{sam} and the \acrshort{esa} across different scenarios and string lengths}
+    \label{fig:build_time}
+\end{figure}
+
+\subsection{Query Time}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Code/Results/plots/query_time_median_iqr.pdf}
+    \caption{Median and interquartile range of query time for the \acrshort{sam} and the \acrshort{esa} across different scenarios and string lengths}
+    \label{fig:query_time}
+\end{figure}
+
+\subsection{Total Time}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Code/Results/plots/total_time_median_iqr.pdf}
+    \caption{Median and interquartile range of total time for the \acrshort{sam} and the \acrshort{esa} across different scenarios and string lengths}
+    \label{fig:total_time}
+\end{figure}

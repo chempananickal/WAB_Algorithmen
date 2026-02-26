@@ -17,19 +17,11 @@ The tests were run on a laptop with the following specifications:
 In order to ensure minimal interference, the test were run with no other applications (other than the IDE itself) running in the background, 
 and with the laptop plugged in and heavy background processes like Windows Update disabled.
 
-\section{Design}
-The algorithms themselves were implemented in pure Python (version 3.13.12), without the aid of any external libraries 
-(although external libraries were used for gathering the results and plotting the graphs).
-
-The \acrlong{sam} was implemented using the standard on-line construction algorithm.
-
-The \acrlong{sa} was constructed using the \acrfull{sais} algorithm, the current state-of-the-art algorithm for constructing it in linear time\cite{sais}.
-The \acrshort{lcp} Array was constructed using Kasai's algorithm\cite{kasai}, which is a linear time algorithm for constructing it from the \acrshort{sa}.
-
 \section{Test Data}
 
-To ensure a comprehensive evaluation of the algorithms, test data was generated using three different alphabets and five different scenarios,
-as described in the following tables.
+To ensure a comprehensive evaluation of the algorithms, synthetic test data was generated using three different alphabets and five different scenarios,
+each designed to cover a wide range of cases that could be encountered in real-world applications, with a particular focus on the field of bioinformatics, 
+where the \acrshort{lcs} problem is particularly relevant due to the nature of \gls{dna} and \gls{rna} sequences being represented as strings.
 
 The alphabets used for the test data were as follows:
 \begin{table}[h]
@@ -71,8 +63,39 @@ Five separate scenarios were tested, in order to cover as wide a range of cases 
     \label{tab:test_scenarios}
 \end{table}
 
+The justifications for the choice of these scenarios are:
+\begin{itemize}
+    \item The \textit{random\_uniform} scenario serves as a baseline for the performance of the algorithms on completely random data.
+    \item The \textit{mutated\_implant} scenario simulates a common real-world case in bioinformatics, where two otherwise unrelated long sequences share a relatively short common motif between them at unrelated positions\cite{interspersedrepeats,transposons}. It's basically the "needle in a haystack" scenario.
+    \item The \textit{repetitive\_with\_noise} scenario simulates another common case in bioinformatics, where sequences are formed by repeating a pattern (tandem repeats\cite{tandemrepeats}) with some mutations, which can lead to multiple short \acrshort{lcs}s.
+    \item The \textit{near\_identical} scenario tests the performance of the algorithms on strings that are nearly identical, so that there would be one very long \acrshort{lcs} which would have to be held in memory.
+    \item The \textit{disjoint\_alphabet} scenario tests the case where the two strings have no common characters, which should result in an \acrshort{lcs} of length 0. The algorithms would have to traverse the entire data structure to determine this.
+It also serves as a sanity check to ensure that the algorithms are correctly identifying the lack of common substrings.
+\end{itemize}
+
+\section{Design}
+The algorithms themselves were implemented in pure Python (version 3.13.12), without the aid of any external libraries 
+(although external libraries were used for gathering the results and plotting the graphs).
+
+The \acrshort{sam} was implemented using the standard on-line construction algorithm\cite{sammake}.
+To find the \acrshort{lcs} of the first string and the second string, the \acrshort{sam} was created with the first string, 
+and then traversed through by the second string, keeping track of the longest match found.
+
+To give the \acrfull{sa} the best chance possible, the \acrshort{sa} was constructed using the \acrfull{sais} algorithm, 
+the current state-of-the-art algorithm for constructing it in linear time\cite{sais}.
+The \acrshort{sa} was constructed for the concatenated string of the two strings being compared, 
+with a \gls{sentinel} character in between them (\textbackslash0 in this case) to separate them.
+The \acrshort{lcp} Array was constructed using Kasai's algorithm\cite{kasai}, which is a linear time algorithm for constructing it from the \acrshort{sa}.
+The \acrshort{esa} was essentially implemented as a combination of the \acrshort{sa} and the \acrshort{lcp} Array.
+
 \textbf{25 string pairs} each of lengths 100, 500, 1000, 5000, and 10,000 characters were generated for each scenario, 
 and each string pair was tested on both algorithms \textbf{20 times} to try and ensure statistical significance of the results.
 To ensure reproducibility, the random seed used for generating the string pairs was fixed at 42 for all scenarios and string lengths.
 
-The generated string pairs, along with their \acrshort{lcs} values, are provided in the supplementary materials.
+The testing code was designed to run both algorithms on the same string pairs, and to measure both the time taken and the peak memory usage for each run.
+The time taken was measured using the \texttt{time} module, while the peak memory usage was measured using the \texttt{tracemalloc} module, which is a built-in Python module for tracking memory allocations.
+The index size for each algorithm was computed using the \texttt{sys.getsizeof} function, which returns the size of an object by recursively summing the sizes of all referenced objects.
+
+The full testing code, including a list of required packages and instructions for running it, is provided in the supplementary materials. 
+A complete list of generated string pairs with their corresponding LCS values, as well as the raw test results, are also included. 
+Additionally, the code used for plotting the results (using the \texttt{matplotlib} library) is provided.
