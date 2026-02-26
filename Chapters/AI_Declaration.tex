@@ -42,5 +42,8 @@ The usage of AI tools within this project is documented here. I solemnly declare
     GitHub Copilot 22 & Asked to replace the lambda with a tuple-key-based approach. & Replaced lambda-based sorting with a tuple-key-based approach for suffix array construction, improving performance \\
     GitHub Copilot 23 & Asked to refactor the plotting code to reduce repetition and make it more modular. & Refactored plotting code to use a single generic plotting function\\
     GitHub Copilot 24 & Asked to replace the suffix array construction with the SA-IS algorithm. & Replaced doubling-based suffix array construction with an SA-IS implementation (linear-time induced sorting with LMS recursion), keeping the same public API\\
+    GitHub Copilot 25 & Reported that generated benchmark tables do not fit on the page and requested a smart code-side solution (splitting tables if needed) instead of shrinking them. & Updated the table-export generator to split each algorithm summary into multiple narrower tables (timing, memory, index size)\\
+    GitHub Copilot 26 & Requested that the generated benchmark tables should not show up in the List of Tables. & Adjusted the generator to avoid captions and instead use a custom numbered title with \texttt{\textbackslash refstepcounter\{table\}} and \texttt{\textbackslash label} for cross-references\\
+    GitHub Copilot 27 & Requested that the generated tables are still slightly too large and should use a smaller font size. & Wrapped generated tabular blocks in \texttt{\textbackslash small} within the generator to reduce width without making tables unreadably tiny\\
 \end{longtable}
 }

@@ -1,0 +1,31 @@
+\chapter{Conclusion}
+
+% Write your conclusion here.
+
+In this paper, two algorithms for solving the longest common substring (\acrshort{lcs}) problem \textbf{between two strings} were compared: the \acrfull{sam} and the \acrfull{esa}.
+The algorithms were implemented in pure Python and tested on a variety of scenarios and string lengths, with the results measured in terms of build time, query time, total time, peak memory usage, and index size.
+
+The results showed that the \acrshort{sam} generally outperformed the \acrshort{esa} in terms of build time and total time, while the query time was more variable depending on the scenario.
+The \acrshort{sam} had a shorter query time than the \acrshort{esa} in most cases, except for the near\_identical scenario where the \acrshort{esa} had a shorter query time due to the nature of the \acrshort{lcs} being singular and very long.
+
+In terms of memory usage, while \acrshort{sam} had a much larger index size than the \acrshort{esa}, with the \acrshort{sam}
+reaching above 4 MiB median for strings of length 10,000, (compared to the \acrshort{esa} which stayed barely above 1 MiB median for the same string length),
+the peak memory usage of the \acrshort{sam} and the \acrshort{esa} were more comparable in most scenarios, negating any potential benefit of the \acrshort{esa} in memory-constrained environments.
+
+The reason the \acrshort{esa} didn't save even more memory could be chalked up to the idiosyncrasies of Python's memory management system and its huge object overhead, given that it is a dynamically typed, interpreted language.
+
+Another interesting observation was that the query time of the \acrshort{sam} seemed to grow in proportion to the length of the \acrshort{lcs}, at least in Python, which could be a potential area for further investigation.
+
+It has to be reasserted that this paper does not claim to be conclusive proof that the \acrshort{sam} is \textit{always} better than the \acrshort{esa} for solving the \acrshort{lcs} problem in general,
+because the individual strengths of the two algorithms are still valid.
+
+For instance, if multiple strings need to compared against the same "reference" string,
+the \acrshort{sam} would have to be constructed only once, and then reused for all the comparisons, which would give it a significant advantage over the \acrshort{esa}, which would have to be reconstructed every time.
+
+On the other hand, if the \acrshort{lcs} of more than two strings needs to be found at once, the \acrshort{esa} would have a significant advantage over the \acrshort{sam}, as it can be constructed with an indefinite number of strings, 
+so long as one can find enough unique \gls{sentinel} characters to separate them which are not present in the strings themselves and are lexicographically smaller than any other character in the strings.
+The equivalent of this for the \acrshort{sam} would be to construct a "General Suffix Automaton"\cite{samdef} which is a substantially more complex data structure that can represent the suffixes of multiple strings at once, 
+requiring the same $O(|\sum_{i=1}^k n_i|)$ for construction (where $n_i$ is the length of string $i$ and $k$ is the number of strings), the same as the \acrshort{esa}.
+
+Due to the narrow scope of this paper, more advanced algorithms like the FM-Index\cite{fmindex} were not included in the comparisons, 
+but it could be interesting to compare against in future work, especially given that it is built on top of the \acrshort{esa} idea and optimized for using minimal space.

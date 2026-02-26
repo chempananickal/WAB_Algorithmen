@@ -1,7 +1,7 @@
 \chapter{Methods}
 
 % Write your methods here.
-\section{Hardware and Software}
+\section{Hardware Specifications}
 The tests were run on a laptop with the following specifications:
 \begin{itemize}
     \item CPU Model: Intel Core i5-10210U
@@ -11,11 +11,42 @@ The tests were run on a laptop with the following specifications:
     \item CPU Max Turbo Frequency: 4.20 GHz\cite{intel}
     \item RAM: 16 GB DDR4 2933 MT/s
     \item Storage: 512 GB NVMe SSD
-    \item Operating System: Windows 11 Pro 64-bit
-    \item IDE: Visual Studio Code (version 1.109.5)
 \end{itemize}
-In order to ensure minimal interference, the test were run with no other applications (other than the IDE itself) running in the background, 
+In order to ensure minimal interference, the tests were run with no other applications (other than the IDE itself) running, 
 and with the laptop plugged in and heavy background processes like Windows Update disabled.
+
+\section{Python Environment}
+Here are the details of the Python environment used for the implementation and testing of the algorithms:
+
+\begin{table}[H]
+\begin{tabularx}{\textwidth}{|l|X|}
+    \hline
+    \textbf{Python Version} & 3.13.12 \\
+    \hline
+    \textbf{Operating System} & Windows 11 Pro 64-bit (version 25H2) \\
+    \hline
+    \textbf{IDE} & Visual Studio Code (version 1.109.5) \\
+    \hline
+    \textbf{Environment Manager} & Miniforge (conda version 26.1.0) \\
+    \hline
+    \textbf{Packages Used} & 
+    \begin{tabular}{ll}
+        \textbf{Package} & \textbf{Version} \\
+        \hline
+        time & built-in \\
+        tracemalloc & built-in \\
+        sys & built-in \\
+        matplotlib & 3.10.8 \\
+        pandas & 3.0.1 \\
+        jupyter & 1.1.1 \\
+        Jinja2 & 3.1.6 \\
+    \end{tabular}
+    \\
+    \hline
+\end{tabularx}
+\caption{Details of the Python environment used for implementation and testing}
+\label{tab:python_environment}
+\end{table}
 
 \section{Test Data}
 
@@ -24,7 +55,7 @@ each designed to cover a wide range of cases that could be encountered in real-w
 where the \acrshort{lcs} problem is particularly relevant due to the nature of \gls{dna} and \gls{rna} sequences being represented as strings.
 
 The alphabets used for the test data were as follows:
-\begin{table}[h]
+\begin{table}[H]
     \renewcommand{\arraystretch}{1.5}
     \begin{tabularx}{\textwidth}{|l|X|X|}
         \hline
@@ -42,7 +73,7 @@ The alphabets used for the test data were as follows:
 \end{table}
 
 Five separate scenarios were tested, in order to cover as wide a range of cases as possible:
-\begin{table}[h]
+\begin{table}[H]
     \renewcommand{\arraystretch}{1.5}
     \begin{tabularx}{\textwidth}{|l|X|l|}
         \hline
@@ -96,6 +127,6 @@ The testing code was designed to run both algorithms on the same string pairs, a
 The time taken was measured using the \texttt{time} module, while the peak memory usage was measured using the \texttt{tracemalloc} module, which is a built-in Python module for tracking memory allocations.
 The index size for each algorithm was computed using the \texttt{sys.getsizeof} function, which returns the size of an object by recursively summing the sizes of all referenced objects.
 
-The full testing code, including a list of required packages and instructions for running it, is provided in the supplementary materials. 
+The full testing code, including a requirements file and instructions for running it, is provided in the supplementary materials. 
 A complete list of generated string pairs with their corresponding LCS values, as well as the raw test results, are also included. 
 Additionally, the code used for plotting the results (using the \texttt{matplotlib} library) is provided.
