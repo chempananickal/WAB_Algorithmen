@@ -3,10 +3,9 @@
 
 \section{Choice of Central Tendency}
 The data collected seems to be heavily right-skewed, with some outliers. This is irrespective of the scenario, string length, algorithm, 
-or even the type of measurement (build time, query time, total time, or memory usage).
-
-This is likely due to cache misses, other background processes running on the computer, 
+or even the type of measurement (build time, query time, total time, or memory usage).This is likely due to cache misses, other background processes running on the computer, 
 or other random factors that can affect the performance of the algorithms in a non-deterministic way.
+
 Therefore, the \textbf{median} was chosen as the measure of central tendency for the results, 
 as the data is not normally distributed and the median is more robust to outliers than the mean.
 And since the median is being used, the interquartile range (\acrshort{iqr}) was chosen as the measure of variability.
@@ -64,7 +63,6 @@ This leads to the interesting observation that \textit{the query time of the \ac
 Also note that the query time for both algorithms is extremely small compared to the build time,
 and even with string pairs that are each 10,000 characters long, the median query time remained under 0.1 seconds.
 
-\clearpage
 \subsection{Total Time}
 
 The total time represents the time from the start of the construction of the data structure to the end of finding the \acrshort{lcs}, 
@@ -84,3 +82,38 @@ with the difference becoming more pronounced as the string length increases.
 This is in spite of the fact that the \acrshort{esa} was built with the \acrshort{sais} and Kasai's algorithms,
 avoiding the traditional naive algorithms which would have used Python's built-in sorting, 
 rendering the time complexity to be \textit{O(nlog n)} for a combined string of length \textit{n}.
+
+\section{Memory Usage}
+The memory usage was measured for both the build phase and the query phase, as well as the total memory usage, which is the peak memory usage during the entire process.
+The index size was also measured, which is the size of the data structure (the \acrshort{sam} or the \acrshort{esa}) in memory.
+
+\subsection{Index Size}
+The index size is measured using the \texttt{sys.getsizeof} function, which returns the size of an object in bytes, including the size of all referenced objects recursively.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Code/Results/plots/index_size_median_iqr.pdf}
+    \caption{Median and interquartile range (\acrshort{iqr}) of index size for the \acrshort{sam} and the \acrshort{esa} across different scenarios and string lengths}
+    \label{fig:index_size}
+\end{figure}
+
+As can be seen from the plot, the index size for the \acrshort{sam} is much larger than that of the \acrshort{esa}.
+This is to be expected, as the \acrshort{sam} is a much more complex data structure, being a deterministic finite automaton, 
+while the \acrshort{esa} is essentially just two arrays of integers.
+
+\subsection{Peak Memory Usage}
+The peak memory usage is measured using the \texttt{tracemalloc} module, which tracks memory allocations in Python. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Code/Results/plots/peak_memory_median_iqr.pdf}
+    \caption{Median and interquartile range (\acrshort{iqr}) of peak memory usage for the \acrshort{sam} and the \acrshort{esa} across different scenarios and string lengths}
+    \label{fig:peak_memory_usage}
+\end{figure}
+
+This, on the other hand, was a much more surprising result, because as can be seen from the plot, 
+the peak memory usage was comparable between the two algorithms across three out of the five tested scenarios,
+with the \acrshort{sam} even having a slightly lower peak memory usage than the \acrshort{esa} in the case of the random\_uniform scenario.
+
+And of the two scenarios where the \acrshort{sam} had a higher peak memory usage than the \acrshort{esa}, the difference was not as pronounced as the difference in index size,
+thereby lending credence to the argument that a pure Python implementation of the \acrshort{esa} does not yield a significant advantage in terms of memory usage in actally memory-constrained environments, 
+where the peak memory usage is what will determine whether the algorithm can run or not, rather than the final index size.

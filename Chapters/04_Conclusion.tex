@@ -1,6 +1,6 @@
-\chapter{Conclusion}
+\chapter{Discussion and Conclusion}
 
-% Write your conclusion here.
+\section{Results and Discussion}
 
 In this paper, two algorithms for solving the longest common substring (\acrshort{lcs}) problem \textbf{between two strings} were compared: the \acrfull{sam} and the \acrfull{esa}.
 The algorithms were implemented in pure Python and tested on a variety of scenarios and string lengths, with the results measured in terms of build time, query time, total time, peak memory usage, and index size.
@@ -12,20 +12,50 @@ In terms of memory usage, while \acrshort{sam} had a much larger index size than
 reaching above 4 MiB median for strings of length 10,000, (compared to the \acrshort{esa} which stayed barely above 1 MiB median for the same string length),
 the peak memory usage of the \acrshort{sam} and the \acrshort{esa} were more comparable in most scenarios, negating any potential benefit of the \acrshort{esa} in memory-constrained environments.
 
-The reason the \acrshort{esa} didn't save even more memory could be chalked up to the idiosyncrasies of Python's memory management system and its huge object overhead, given that it is a dynamically typed, interpreted language.
+The \acrshort{sam}'s performance advantage in build time can be attributed to its more straightforward construction algorithm, which processes the string character by character while maintaining a relatively simple state structure.
+In contrast, the \acrshort{esa} construction involves first building the suffix array using the \acrshort{sais} algorithm, followed by computing the \acrshort{lcp} array using Kasai's algorithm, introducing additional computational overhead despite both algorithms being theoretically linear.
 
-Another interesting observation was that the query time of the \acrshort{sam} seemed to grow in proportion to the length of the \acrshort{lcs}, at least in Python, which could be a potential area for further investigation.
+The memory results revealed an interesting discrepancy between theoretical expectations and practical outcomes.
+Despite the \acrshort{esa} having a significantly smaller index size (barely above 1 MiB for 10,000-character strings compared to the \acrshort{sam}'s 4+ MiB), the peak memory usage during construction and query remained comparable between the two approaches.
+This can be attributed to Python's memory management system and its substantial per-object overhead.
+As a dynamically typed, interpreted language, Python allocates memory for objects with considerable metadata, and the temporary data structures created during algorithm execution consume memory that is not reflected in the final index size measurements.
+This Python-specific behavior suggests that the \acrshort{esa}'s theoretical space advantage may be diminished in practice when using high-level languages with significant runtime overhead.
 
-It has to be reasserted that this paper does not claim to be conclusive proof that the \acrshort{sam} is \textit{always} better than the \acrshort{esa} for solving the \acrshort{lcs} problem in general,
-because the individual strengths of the two algorithms are still valid.
+Another noteworthy observation was that the query time of the \acrshort{sam} appeared to grow proportionally to the length of the resulting \acrshort{lcs}.
+This behavior, particularly evident in the near\_identical scenario where the \acrshort{esa} outperformed the \acrshort{sam}, suggests that the \acrshort{sam}'s query performance is influenced not only by the input string length but also by the characteristics of the match itself.
+This could be due to the way the Python implementation constructs the result set of matching substrings, and warrants further investigation to determine whether this pattern persists in lower-level language implementations or with different result collection strategies.
 
-For instance, if multiple strings need to compared against the same "reference" string,
-the \acrshort{sam} would have to be constructed only once, and then reused for all the comparisons, which would give it a significant advantage over the \acrshort{esa}, which would have to be reconstructed every time.
+\section{Limitations}
 
-On the other hand, if the \acrshort{lcs} of more than two strings needs to be found at once, the \acrshort{esa} would have a significant advantage over the \acrshort{sam}, as it can be constructed with an indefinite number of strings, 
-so long as one can find enough unique \gls{sentinel} characters to separate them which are not present in the strings themselves and are lexicographically smaller than any other character in the strings.
-The equivalent of this for the \acrshort{sam} would be to construct a "General Suffix Automaton"\cite{samdef} which is a substantially more complex data structure that can represent the suffixes of multiple strings at once, 
-requiring the same $O(|\sum_{i=1}^k n_i|)$ for construction (where $n_i$ is the length of string $i$ and $k$ is the number of strings), the same as the \acrshort{esa}.
+It is important to note that this study focused specifically on the \acrshort{lcs} problem \textbf{between exactly two strings} in a Python implementation.
+The results and conclusions are therefore most applicable to this particular use case and programming environment.
+
+The choice of Python as the implementation language, while justified by its prevalence in bioinformatics, introduces language-specific characteristics 
+that may not generalize to implementations in lower-level languages such as C\cite{c} or Rust\cite{rust}, where memory management is more explicit and overhead is significantly reduced.
+Additionally, the benchmark scenarios, while diverse, represent a finite set of test cases with a focus on bioinformatics-relevant patterns, 
+and may not capture the full spectrum of possible input characteristics that could influence algorithm performance.
+
+Furthermore, this comparison examined relatively straightforward implementations of both algorithms without exploring potential optimizations such as specialized memory allocators.
+
+\section{Practical Considerations}
+
+While the benchmarks demonstrated the \acrshort{sam}'s overall advantage for the specific two-string \acrshort{lcs} problem, the choice between these algorithms in practice should be guided by the particular use case at hand.
+
+If multiple strings need to be compared against the same "reference" string, the \acrshort{sam} becomes significantly more attractive.
+The automaton needs to be constructed only once for the reference string and can then be reused for all subsequent comparisons, making the construction time effectively "amortized" across all queries.
+This makes the \acrshort{sam} particularly well-suited for applications such as pattern matching in genomic databases, where a single reference genome is queried repeatedly against many sample sequences.
+
+Conversely, if the \acrshort{lcs} of more than two strings needs to be found simultaneously, the \acrshort{esa} still holds a distinct advantage.
+The \acrshort{esa} can be constructed for an arbitrary number of strings by concatenating them with unique \gls{sentinel} characters, 
+so long as one can find enough sentinels that are lexicographically smaller than any character in the input strings and not present in the strings themselves.
+The equivalent functionality for the \acrshort{sam}, the "Generalized Suffix Automaton"\cite{samdef} - 
+is a substantially more complex data structure that maintains the same $O(|\sum_{i=1}^k n_i|)$ construction complexity as the \acrshort{esa}, where $n_i$ is the length of string $i$ and $k$ is the number of strings.
+Given the increased implementation complexity without a corresponding performance benefit, the \acrshort{esa} would likely be preferable for multi-string \acrshort{lcs} problems, unless a "sentinel-free" approach is specifically needed.
+
+\section{Future Work}
 
 Due to the narrow scope of this paper, more advanced algorithms like the FM-Index\cite{fmindex} were not included in the comparisons, 
 but it could be interesting to compare against in future work, especially given that it is built on top of the \acrshort{esa} idea and optimized for using minimal space.
+
+Additionally, a comparison between these algorithms when they are written in Cython\cite{cython} would be worth further exploration, 
+as many performance critical Python packages are implemented in Cython to achieve a balance between Python's ease of use and C's efficiency.

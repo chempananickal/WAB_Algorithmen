@@ -49,7 +49,8 @@
 % Glossary and abbreviations in front matter
 \printglossary[title=Glossary]
 \addcontentsline{toc}{chapter}{Glossary}
-% \printglossary[type=\acronymtype,title=Abbreviations,nonumberlist]
+\printglossary[type=\acronymtype,title=Abbreviations,nonumberlist]
+\addcontentsline{toc}{chapter}{Abbreviations}
 \clearpage
 
 % Main content in Arabic numerals
@@ -63,6 +64,7 @@
 \pagenumbering{roman}
 
 \printbibliography
+\addcontentsline{toc}{chapter}{Bibliography}
 
 \include{Chapters/Appendix}
 \include{Chapters/AI_Declaration}

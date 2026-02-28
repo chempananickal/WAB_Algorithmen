@@ -2,22 +2,22 @@
 \addcontentsline{toc}{chapter}{Abstract}
 
 % Write your abstract here.
-The objective of this paper was to compare the performance of two algorithms, the \acrlong{sam} and the \acrlong{esa}, 
-for solving the \acrlong{lcs} problem \textbf{between two strings} in a pure Python implementation.
+The objective of this paper was to compare the performance of two algorithms, the \textit{\acrlonglc{sam}} and the \textit{\acrlonglc{esa}}, 
+for solving the \acrlonglc{lcs} problem \textbf{between two strings} in a pure Python implementation.
 
 The algorithms were tested on multiple scenarios, from best case to worst case, and on multiple string lengths, from 100 to 10,000 characters, 
 with multiple runs for each scenario and string length to ensure statistical significance of the results.
 Both the build time and the query time were measured, as well as the memory used both for building the data structure and for querying it.
 
-The results showed that \textbf{so long as one is programming in pure Python, and so long as only two strings are involved}, an \acrlong{esa} offers practically zero advantages over a \acrlong{sam}.
-The \acrlong{sam} was substantially faster to build and to query in all but one scenario, 
-and although the \acrlong{esa} had an overall smaller index size, this would do very little in real-life memory-constrained applications, 
-as its peak memory usage was either comparable to the \acrlong{sam} or only barely smaller in all scenarios and string lengths.
-Not to mention that the \acrlong{sam} is much simpler to implement.
+The results showed that \textbf{so long as one is programming in pure Python, and so long as only two strings are involved}, an \acrlonglc{esa} offers practically zero advantages over a \acrlonglc{sam}.
+The \acrlonglc{sam} was substantially faster to build and to query in all but one scenario, 
+and although the \acrlonglc{esa} had an overall smaller index size, this would do very little in real-life memory-constrained applications, 
+as its peak memory usage was either comparable to the \acrlonglc{sam} or only barely smaller in all scenarios and string lengths.
+Not to mention that the \acrlonglc{sam} is much simpler to implement.
 
 This is potentially due to the nature of Python, as it is a high level interpreted language where the memory management is abstracted away from the programmer,
 leading to even simple data types like integers and lists having a much higher memory overhead than in lower level languages.
-Due to Python's memory management, the \acrlong{esa} would also lose its cache locality, which is the main reason for its compactness in lower level languages like C.
+Due to Python's memory management, the \acrlonglc{esa} would also lose its cache locality, which is the main reason for its compactness in lower level languages like C.
 
 \clearpage
 % German translation (italicized)

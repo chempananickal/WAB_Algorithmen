@@ -39,6 +39,9 @@
 \addbibresource{references.bib}
 \makeglossaries
 
+% Custom command for lowercase acronym long form
+\newcommand{\acrlonglc}[1]{\glslink{#1}{\MakeLowercase{\glsentrylong{#1}}}}
+
 % Custom environment for benchmark tables
 % Wraps tabularx tables without caption (won't appear in list of tables)
 \newenvironment{benchmarktable}[2]{% #1=title, #2=description
