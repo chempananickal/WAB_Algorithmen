@@ -31,7 +31,7 @@ As the \acrlonglc{sam} and the \acrlonglc{esa} are both further refinements of t
 
 \subsection{Suffix Automaton}
 
-A \acrfull{sam} is a data structure that represents all the substrings of a given string in a compact way.
+A \acrfull{sam} is a deterministic finite automaton that represents all the substrings of a given string in a compact way.
 
 \begin{displaycquote}{samdef}
   An efficient and compact data structure for representing a full index of a set of strings is a \acrlonglc{sam}, a minimal
@@ -57,7 +57,7 @@ In this implementation, a \acrfull{esa} consists of a \acrfull{sa} and an \acrfu
 which is all that's necessary to solve the \acrshort{lcs} problem in linear time because the \acrshort{lcs} can be solved by 
 finding the maximum value in the \acrshort{lcp} array corresponding to suffixes (from the \acrshort{sa}) that belong to different strings.
 
-A \acrshort{sa} is an array of integers that represent the starting positions of the suffixes of a string in lexicographical order,
+An \acrshort{sa} is an array of integers that represent the starting positions of the suffixes of a string in lexicographical order,
 while the \acrshort{lcp} array is an array of integers that represent the length of the longest common prefix between adjacent suffixes in the \acrshort{sa}\cite{esadef}.
 
 Currently, there are algorithms to construct both the \acrshort{sa} and the \acrshort{lcp} array in 
@@ -72,7 +72,7 @@ This allows for finding the \acrshort{lcs} of all the strings at once.
 
 Although there have been many papers comparing either the \acrshort{sam} or the \acrshort{esa} to the suffix tree \cite{samdef,sam,crochemore1994text,esadef,suffixarrays}, 
 there is a lack of direct comparisons between these two data structures,
-even though they both fundamentally solve the same problem using the same underlying principle of representing the suffixes of a string in a compact way.
+even though they both fundamentally solve the same problem using the same underlying principle of being a navigable compressed representation of all suffixes of a string.
 
 Moreover, there is a lack of concrete practical comparisons between these two structures in the context of specific programming languages,
 even though the obtuse memory management of languages like Python\cite{python} could potentially lead to real-world results not matching up with theoretical expectations, especially when it comes to space usage.
