@@ -36,7 +36,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--lengths",
         type=str,
-        default="100,500,1000,5000,10000",
+        default="100,300,600,1000,2000,3000,4500,6000,8000,10000",
         help="Comma-separated string lengths, e.g. 100,250,500",
     )
     parser.add_argument(
