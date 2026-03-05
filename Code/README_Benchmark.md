@@ -39,6 +39,9 @@ If you wish to plot already existing results, you can run:
 python Code/benchmark_lcs.py --mode plot
 ```
 
+⚠️ **Caution**: This will overwrite all existing files in `Code/results/`!
+⚠️ **Even more caution**: The default settings usually take **2.5 hours** to run (or at least it did on my machine)! Adjust the `--lengths`, `--cases-per-length`, and `--runs` parameters to be something more reasonable for a test run.
+
 ## Output
 
 By default, outputs are written to `Code/results/`:
