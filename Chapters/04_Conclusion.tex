@@ -2,7 +2,7 @@
 
 \section{Results and Discussion}
 
-In this paper, two algorithms for solving the longest common substring (\acrshort{lcs}) problem \textbf{between two strings} were compared: the \acrfull{sam} and the \acrfull{esa}.
+In this paper, two algorithms for solving the longest common substring (\acrshort{lcs}) problem between two strings were compared: the \acrfull{sam} and the \acrfull{esa}.
 The algorithms were implemented in pure Python and tested on a variety of scenarios and string lengths, with the results measured in terms of build time, query time, total time, peak memory usage, and index size.
 
 The results showed that the \acrshort{sam} generally outperformed the \acrshort{esa} in terms of build time and total time, while the query time was more variable depending on the scenario.
@@ -24,6 +24,8 @@ This Python-specific behavior suggests that the \acrshort{esa}'s theoretical spa
 Another noteworthy observation was that the query time of the \acrshort{sam} appeared to grow proportionally to the length of the resulting \acrshort{lcs}.
 This behavior, particularly evident in the near\_identical scenario where the \acrshort{esa} outperformed the \acrshort{sam}, suggests that the \acrshort{sam}'s query performance is influenced not only by the input string length but also by the characteristics of the match itself.
 This could be due to the way the Python implementation constructs the result set of matching substrings, and warrants further investigation to determine whether this pattern persists in lower-level language implementations or with different result collection strategies.
+
+\textit{In summary, to answer the original research question of which algorithm is more efficient for finding the longest common substring between two strings in Python, the \textbf{\acrfull{sam}} proves to be the more favorable choice given the criteria examined in this study.}
 
 \section{Limitations}
 
