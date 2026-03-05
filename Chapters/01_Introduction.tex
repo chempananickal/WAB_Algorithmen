@@ -53,7 +53,7 @@ by traversing the automaton with the second string and keeping track of the long
   The generic name \textit{\acrlonglc{esa}} stands for data structures consisting of the suffix array and additional tables.
 \end{displaycquote}
 
-In this implementation, a \acrfull{esa} consists of a \acrfull{sa} and an \acrfull{lcp} Array, 
+In this implementation, an \acrfull{esa} consists of a \acrfull{sa} and a \acrfull{lcp} Array, 
 which is all that's necessary to solve the \acrshort{lcs} problem in linear time because the \acrshort{lcs} can be solved by 
 finding the maximum value in the \acrshort{lcp} array corresponding to suffixes (from the \acrshort{sa}) that belong to different strings.
 
