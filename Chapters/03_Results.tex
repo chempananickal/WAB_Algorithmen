@@ -4,14 +4,17 @@
 \section{Choice of Central Tendency}
 The data collected seems to be heavily right-skewed, with some outliers. This is irrespective of the scenario, string length, algorithm, 
 or even the type of measurement (build time, query time, total time, or memory usage).This is likely due to cache misses, other background processes running on the computer, 
-or other random factors that can affect the performance of the algorithms in a non-deterministic way.
+or any number of other random factors.
 
 Therefore, the \textbf{median} was chosen as the measure of central tendency for the results, 
 as the data is not normally distributed and the median is more robust to outliers than the mean.
-And since the median is being used, the interquartile range (\acrshort{iqr}) was chosen as the measure of variability.
+Consequently, the interquartile range (\acrshort{iqr}) was chosen as the measure of variability.
 
 Tables with the exact values of the median and \acrshort{iqr} for all measurements are included in the appendix (page~\pageref{app:tables}) grouped by scenario, and the plots in the main text are based on these values.
 An even more detailed summary is available as a CSV file in the supplementary materials, which includes other statistics such as the mean and standard deviation.
+
+Slope ratio tables were also generated, which shows the ratio of the linear regression slopes of the ESA and SAM for each scenario and metric,
+as a hopefully more hardware-independent measure of the relative performance of the two algorithms. These are also included in the appendix and as a CSV file in the supplementary materials.
 
 \begin{figure}[H]
     \centering
@@ -39,7 +42,7 @@ The build time is the time taken to construct the data structure (the \acrshort{
     \label{fig:build_time}
 \end{figure}
 
-As can be seen from the plot, the build time for both algorithms tend to follow a linear trend with respect to the string length (as is to be expected),
+As can be seen from the plot, the build times for both algorithms tend to follow a linear trend with respect to the string length (as is to be expected),
 but the \acrshort{esa} has a much higher build time than the \acrshort{sam}, especially as the string length increases.
 
 \subsection{Query Time}
@@ -75,9 +78,12 @@ so it is essentially the sum of the build time and the query time.
     \label{fig:total_time}
 \end{figure}
 
-Because the build time was so high for the \acrshort{esa} compared to the \acrshort{sam}, 
+Because the build time is so high for the \acrshort{esa} compared to the \acrshort{sam}, 
 the total time for the \acrshort{esa} is also much higher than that of the \acrshort{sam} across all scenarios and string lengths,
 with the difference becoming more pronounced as the string length increases.
+
+In the worst case scenario (random\_uniform), the total time for the \acrshort{esa} is about 15.83 times higher than that of the \acrshort{sam}.
+And even in the best case scenario (near\_identical), the \acrshort{esa} is about 7.96 times higher than that of the \acrshort{sam}!
 
 This is in spite of the fact that the \acrshort{esa} was built with the \acrshort{sais} and Kasai's algorithms,
 avoiding the traditional naive algorithms which would have used Python's built-in sorting, 
@@ -88,7 +94,7 @@ The memory usage was measured for both the build phase and the query phase, as w
 The index size was also measured, which is the size of the data structure (the \acrshort{sam} or the \acrshort{esa}) in memory.
 
 \subsection{Index Size}
-The index size is measured using the \texttt{sys.getsizeof} function, which returns the size of an object in bytes, including the size of all referenced objects recursively.
+The index size was measured using the \texttt{sys.getsizeof} function, which returns the size of an object in bytes, including the size of all referenced objects recursively.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Code/Results/plots/index_size_median_iqr.pdf}
@@ -97,6 +103,10 @@ The index size is measured using the \texttt{sys.getsizeof} function, which retu
 \end{figure}
 
 As can be seen from the plot, the index size for the \acrshort{sam} is much larger than that of the \acrshort{esa}.
+
+In the best case scenario (near\_identical), the \acrshort{sam} has an index size that is about 2.89 times larger than that of the \acrshort{esa}, 
+and in the worst case scenario (repetitive\_with\_noise), the \acrshort{sam} has an index size that is about 4.97 times larger than that of the \acrshort{esa}.
+
 This is to be expected, as the \acrshort{sam} is a much more complex data structure, being a deterministic finite automaton, 
 while the \acrshort{esa} is essentially just two arrays of integers.
 
@@ -110,10 +120,11 @@ The peak memory usage is measured using the \texttt{tracemalloc} module, which t
     \label{fig:peak_memory_usage}
 \end{figure}
 
-This, on the other hand, was a much more surprising result, because as can be seen from the plot, 
-the peak memory usage was comparable between the two algorithms across three out of the five tested scenarios,
-with the \acrshort{sam} even having a slightly lower peak memory usage than the \acrshort{esa} in the case of the random\_uniform scenario.
+This result was considerably more surprising. As the plot shows, peak memory usage is comparable between the two algorithms in three out of five scenarios,
+with the \acrshort{esa} even exhibiting slightly higher peak memory usage than the \acrshort{sam} in the random\_uniform scenario (only about 5\% higher, see Appendix for details).
 
-And of the two scenarios where the \acrshort{sam} had a higher peak memory usage than the \acrshort{esa}, the difference was not as pronounced as the difference in index size,
-thereby lending credence to the argument that a pure Python implementation of the \acrshort{esa} does not yield a significant advantage in terms of memory usage in actally memory-constrained environments, 
-where the peak memory usage is what will determine whether the algorithm can run or not, rather than the final index size.
+In the two remaining scenarios where the \acrshort{sam} consumes more peak memory (mutated\_implant and repetitive\_with\_noise), the difference is far less pronounced than what the index size differences would have led one to expect.
+The \acrshort{sam} had about 43\% higher peak memory usage than the \acrshort{esa} in the mutated\_implant scenario, and about 58\% higher in the repetitive\_with\_noise scenario (see Appendix for details).
+
+This lends credence to the argument that a pure Python implementation of the \acrshort{esa} offers no decisive advantage in truly memory-constrained environments,
+where peak memory usage (and not final index size) determines whether the algorithm can even run on the available hardware in the first place.

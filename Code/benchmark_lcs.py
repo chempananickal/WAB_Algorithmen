@@ -19,6 +19,7 @@ from helpers.plotting import export_plots
 from helpers.statistics_io import (
     aggregate_results,
     export_latex_tables,
+    export_slope_ratio_tables,
     load_raw_results,
 )
 
@@ -117,6 +118,7 @@ def main() -> None:
         summary_df = aggregate_results(raw_df)
         summary_df.to_csv(output_dir / "summary_stats.csv", index=False)
         export_latex_tables(summary_df, output_dir)
+        export_slope_ratio_tables(summary_df, output_dir)
         export_plots(summary_df, output_dir)
         print_console_summary(summary_df)
 

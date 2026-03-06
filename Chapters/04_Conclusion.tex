@@ -23,7 +23,7 @@ This Python-specific behavior suggests that the \acrshort{esa}'s theoretical spa
 
 Another noteworthy observation was that the query time of the \acrshort{sam} appeared to grow proportionally to the length of the resulting \acrshort{lcs}.
 This behavior, particularly evident in the near\_identical scenario where the \acrshort{esa} outperformed the \acrshort{sam}, suggests that the \acrshort{sam}'s query performance is influenced not only by the input string length but also by the characteristics of the match itself.
-This could be due to the way the Python implementation constructs the result set of matching substrings, and warrants further investigation to determine whether this pattern persists in lower-level language implementations or with different result collection strategies.
+This could potentially be due to the way the Python implementation constructs the result set of matching substrings, although it warrants further investigation to determine whether this pattern persists in lower-level language implementations or with different result collection strategies.
 
 \textit{In summary, to answer the original research question of which algorithm is more efficient for finding the longest common substring between two strings in Python, the \textbf{\acrfull{sam}} proves to be the more favorable choice given the criteria examined in this study.}
 

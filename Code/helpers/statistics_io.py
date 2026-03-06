@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 
@@ -194,3 +195,110 @@ def load_raw_results(output_dir: Path) -> pd.DataFrame:
             f"Missing raw results at {raw_path}. Run with --mode run or --mode both first."
         )
     return pd.read_csv(raw_path)
+
+
+def export_slope_ratio_tables(summary_df: pd.DataFrame, output_dir: Path) -> None:
+    """Fit a linear regression (median value ~ string length) per algorithm x scenario x metric,
+    then export ESA/SAM slope ratios as one LaTeX table per scenario.
+
+    The absolute slopes are hardware-dependent and are NOT reported.
+    Only the ratio ESA_slope / SAM_slope is stored in the tables, because both algorithms
+    ran on the same machine, making the ratio hardware-independent.
+    """
+    import re
+
+    tables_dir = output_dir / "tables"
+    tables_dir.mkdir(parents=True, exist_ok=True)
+
+    # Metrics: (column in summary_df, display name, unit label)
+    metrics = [
+        ("build_median_ms",   "Build Time",    "ms/char"),
+        ("query_median_ms",   "Query Time",    "ms/char"),
+        ("total_median_ms",   "Total Time",    "ms/char"),
+        ("memory_median_kib", "Peak Memory",   "KiB/char"),
+        ("index_size_median_kib", "Index Size","KiB/char"),
+    ]
+
+    ALG_SAM = "Suffix Automaton"
+    ALG_ESA = "Enhanced Suffix Array"
+
+    rows = []
+    for scenario, scenario_df in summary_df.groupby("scenario"):
+        for col, label, unit in metrics:
+            slopes: dict[str, float] = {}
+            for alg in (ALG_SAM, ALG_ESA):
+                alg_df = scenario_df[scenario_df["algorithm"] == alg].sort_values("length")
+                if len(alg_df) < 2:
+                    slopes[alg] = float("nan")
+                    continue
+                x = alg_df["length"].to_numpy(dtype=float)
+                y = alg_df[col].to_numpy(dtype=float)
+                slope, _ = np.polyfit(x, y, 1)
+                slopes[alg] = slope
+
+            sam_slope = slopes.get(ALG_SAM, float("nan"))
+            esa_slope = slopes.get(ALG_ESA, float("nan"))
+            ratio = sam_slope / esa_slope if sam_slope and not np.isnan(esa_slope) else float("nan")
+
+            rows.append({
+                "Scenario": scenario,
+                "Metric": label,
+                "Unit": unit,
+                "SAM slope": sam_slope,
+                "ESA slope": esa_slope,
+                "SAM / ESA ratio": ratio,
+            })
+
+    ratio_df = pd.DataFrame(rows)
+
+    # One table per scenario
+    for scenario, sdf in ratio_df.groupby("Scenario"):
+        display = sdf[["Metric", "Unit", "SAM slope", "ESA slope", "SAM / ESA ratio"]].copy()
+
+        # Add Factor (always ≥ 1) and Worse (which algorithm is slower/larger)
+        def factor_label(row: pd.Series) -> str:
+            r = row["SAM / ESA ratio"]
+            if np.isnan(r):
+                return "N/A"
+            f = r if r >= 1 else 1.0 / r
+            return f"{f:.2f}x"
+
+        def worse_label(row: pd.Series) -> str:
+            r = row["SAM / ESA ratio"]
+            if np.isnan(r):
+                return "N/A"
+            return "SAM" if r >= 1 else "ESA"
+
+        display["Factor"] = display.apply(factor_label, axis=1)
+        display["Worse"] = display.apply(worse_label, axis=1)
+
+        display["SAM slope"] = display["SAM slope"].map(lambda v: f"{v:.4f}")
+        display["ESA slope"] = display["ESA slope"].map(lambda v: f"{v:.4f}")
+        display["SAM / ESA ratio"] = display["SAM / ESA ratio"].map(lambda v: f"{v:.4f}")
+
+        ncols = len(display.columns)
+        col_spec = "|" + "|".join(["X"] * ncols) + "|"
+
+        table_tex = display.to_latex(index=False, escape=False)
+        table_tex = re.sub(
+            r"\\begin\{tabular\}\{[^}]+\}",
+            r"\\begin{tabularx}{\\textwidth}{" + col_spec + r"}",
+            table_tex,
+        )
+        table_tex = table_tex.replace(r"\end{tabular}", r"\end{tabularx}")
+
+        scen_title = scenario.replace("_", "\\_")
+        description = (
+            "Linear regression slope fitted to median values vs. string length. "
+            "Absolute slopes are likely hardware-dependent."
+        )
+        latex = (
+            f"\\begin{{benchmarktable}}{{Empirical Scaling Constant Ratios: {scen_title}}}{{{description}}}\n"
+            + table_tex
+            + "\\end{benchmarktable}"
+        )
+
+        (tables_dir / f"slope_ratios_{scenario}.tex").write_text(latex, encoding="utf-8")
+
+    # Also export a combined CSV for quick inspection
+    ratio_df.to_csv(output_dir / "slope_ratios.csv", index=False)

@@ -1,0 +1,13 @@
+\begin{benchmarktable}{Empirical Scaling Constant Ratios: near\_identical}{Linear regression slope fitted to median values vs. string length. Absolute slopes are likely hardware-dependent.}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|}
+\toprule
+Metric & Unit & SAM slope & ESA slope & SAM / ESA ratio & Factor & Worse \\
+\midrule
+Build Time & ms/char & 0.0042 & 0.0915 & 0.0462 & 21.63x & ESA \\
+Query Time & ms/char & 0.0077 & 0.0031 & 2.4885 & 2.49x & SAM \\
+Total Time & ms/char & 0.0119 & 0.0946 & 0.1256 & 7.96x & ESA \\
+Peak Memory & KiB/char & 0.3404 & 0.3077 & 1.1061 & 1.11x & SAM \\
+Index Size & KiB/char & 0.3347 & 0.1159 & 2.8887 & 2.89x & SAM \\
+\bottomrule
+\end{tabularx}
+\end{benchmarktable}
