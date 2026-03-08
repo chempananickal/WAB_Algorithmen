@@ -1,0 +1,17 @@
+\begin{benchmarktable}{Slope Ratios: Peak Memory}{Linear regression slope fitted to median peak memory vs. string length }
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+\toprule
+Scenario & SAM slope & ESA slope & SAM / ESA ratio & SAM $R^2$ & ESA $R^2$ & Factor & Worse \\
+\midrule
+Disjoint Alphabet & 0.3588 & 0.3360 & 1.0677 & 0.9999 & 0.9999 & $1.07\times$ & SAM \\
+\hline
+Mutated Implant & 0.4070 & 0.2836 & 1.4349 & 1.0000 & 1.0000 & $1.43\times$ & SAM \\
+\hline
+Near Identical & 0.3404 & 0.3077 & 1.1061 & 0.9999 & 0.9999 & $1.11\times$ & SAM \\
+\hline
+Random Uniform & 0.3387 & 0.3556 & 0.9524 & 0.9998 & 0.9999 & $1.05\times$ & ESA \\
+\hline
+Repetitive With Noise & 0.4468 & 0.2824 & 1.5823 & 1.0000 & 1.0000 & $1.58\times$ & SAM \\
+\bottomrule
+\end{tabularx}
+\end{benchmarktable}

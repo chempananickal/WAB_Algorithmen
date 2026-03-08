@@ -112,12 +112,12 @@ The \acrshort{sam} was implemented using the standard on-line construction algor
 To find the \acrshort{lcs} of the first string and the second string, the \acrshort{sam} was created with the first string, 
 and then traversed through by the second string, keeping track of the longest match found.
 
-To give the \acrfull{sa} the best chance possible, the \acrshort{sa} was constructed using the \acrfull{sais} algorithm, 
+To give the \acrfull{esa} the best chance possible, the \acrshort{sa} was constructed using the \acrfull{sais} algorithm, 
 the current state-of-the-art algorithm for constructing it in linear time\cite{sais}.
 The \acrshort{sa} was constructed for the concatenated string of the two strings being compared, 
-with a \gls{sentinel} character in between them (\textbackslash0 in this case) to separate them.
+with a \gls{sentinel} character in between them (\texttt{\textbackslash0} in this case) to separate them.
 The \acrshort{lcp} array was constructed using Kasai's algorithm\cite{kasai}, which is a linear time algorithm for constructing it from the \acrshort{sa}.
-The \acrshort{esa} was essentially implemented as a combination of the \acrshort{sa} and the \acrshort{lcp} array.
+The \acrshort{sa} and the \acrshort{lcp} array were then combined to form the \acrshort{esa}.
 
 For each scenario, \textbf{25 string pairs} were generated at each of the lengths 100, 300, 600, 1000, 2000, 3000, 4500, 6000, 8000, and 10000 characters.
 Each string pair was benchmarked on both algorithms \textbf{20 times} to try and ensure statistical significance of the results.

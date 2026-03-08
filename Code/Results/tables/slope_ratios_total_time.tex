@@ -1,0 +1,17 @@
+\begin{benchmarktable}{Slope Ratios: Total Time}{Linear regression slope fitted to median total time vs. string length }
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+\toprule
+Scenario & SAM slope & ESA slope & SAM / ESA ratio & SAM $R^2$ & ESA $R^2$ & Factor & Worse \\
+\midrule
+Disjoint Alphabet & 0.0057 & 0.0854 & 0.0668 & 0.9997 & 0.9997 & $14.97\times$ & ESA \\
+\hline
+Mutated Implant & 0.0070 & 0.0898 & 0.0783 & 0.9994 & 0.9997 & $12.77\times$ & ESA \\
+\hline
+Near Identical & 0.0119 & 0.0946 & 0.1256 & 0.9985 & 0.9995 & $7.96\times$ & ESA \\
+\hline
+Random Uniform & 0.0054 & 0.0862 & 0.0632 & 0.9993 & 0.9996 & $15.83\times$ & ESA \\
+\hline
+Repetitive With Noise & 0.0074 & 0.0907 & 0.0814 & 0.9992 & 0.9997 & $12.29\times$ & ESA \\
+\bottomrule
+\end{tabularx}
+\end{benchmarktable}

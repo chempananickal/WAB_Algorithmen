@@ -1,29 +1,41 @@
 \chapter*{Appendix}
 \addcontentsline{toc}{chapter}{Appendix}
-\label{app:tables}
 
-% Write your appendix here.
-
-The following tables present the mean, standard deviation, median, and interquartile range (IQR) of the measured time and memory usage statistics for each scenario and algorithm.
-
-These tables are abridged for readability. A more comprehensive version is available in the supplementary materials at \path{Code/Results/summary_stats.csv}, 
-which additionally includes minimum and maximum values, quartiles, and sample counts per scenario, algorithm, and metric.
+The full summary statistics (mean, standard deviation, median, \acrshort{iqr}, minimum, maximum, quartiles, and sample counts) per scenario, algorithm, and metric 
+are available in the supplementary materials at \path{Code/Results/summary_stats.csv}.
 
 The full raw benchmark data can be found at \path{Code/Results/raw_runs.csv}, and the corresponding string pairs with their LCS values are stored in \path{Code/Results/case_lcs_values.csv}.
 
+% Write your appendix here.
+
+\section*{Slope Ratios}
+\label{app:sloperatios}
+The following tables present the slope ratios between the \acrshort{sam} and the \acrshort{esa} for each scenario and metric, 
+along with the coefficient of determination ($R^2$) as a measure of goodness of fit for the linear regression.
+
+\begin{itemize}
+    \item \textbf{SAM slope} and \textbf{ESA slope}: Fitted slope of the linear regression of the median measurement against string length for the respective algorithm. 
+    The slope is to be interpreted as the constant $a$ in the linear model $y = a \cdot x + b$, where $y$ is the median measurement (e.g., build time) and $x$ is the length of one of the strings in the string pair.
+    \item \textbf{SAM / ESA ratio}: Ratio between the two slopes. Values below $1$ mean that the \acrshort{sam} grows more slowly than the \acrshort{esa}, while values above $1$ mean the opposite.
+    \item \textbf{SAM $R^2$} and \textbf{ESA $R^2$}: A measure of how closely a linear model fits the observed median values for each algorithm, with values closer to $1$ indicating a stronger linear relationship.
+    \item \textbf{Factor}: An expression of how many times larger the greater slope is compared to the smaller one, always reported as a value $\geq 1$. 
+    For example, a factor of $17.30\times$ means one algorithm's growth rate is 17.30 times steeper than the other's.
+    \item \textbf{Worse}: The algorithm with the steeper slope. As in, the one that scales less favourably with increasing input length.
+\end{itemize}
+
 % Sorted and formatted benchmark tables
-\subsection*{Disjoint Alphabet}
-\input{Code/Results/tables/summary_disjoint_alphabet.tex}
+\subsection*{Build Time}
+\input{Code/Results/tables/slope_ratios_build_time.tex}
 
-\subsection*{Mutated Implant}
-\input{Code/Results/tables/summary_mutated_implant.tex}
+\subsection*{Query Time}
+\input{Code/Results/tables/slope_ratios_query_time.tex}
 
-\subsection*{Near Identical}
-\input{Code/Results/tables/summary_near_identical.tex}
+\subsection*{Total Time}
+\input{Code/Results/tables/slope_ratios_total_time.tex}
 
-\subsection*{Random Uniform}
-\input{Code/Results/tables/summary_random_uniform.tex}
+\subsection*{Index Size}
+\input{Code/Results/tables/slope_ratios_index_size.tex}
 
-\subsection*{Repetitive with Noise}
-\input{Code/Results/tables/summary_repetitive_with_noise.tex}
+\subsection*{Peak Memory Usage}
+\input{Code/Results/tables/slope_ratios_peak_memory.tex}
 

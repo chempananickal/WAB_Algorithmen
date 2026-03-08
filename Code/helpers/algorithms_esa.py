@@ -104,8 +104,7 @@ def build_suffix_array(text: str) -> list[int]:
             while True:
                 if s[a + k] != s[b + k] or is_lms[a + k] != is_lms[b + k]:
                     return False
-                # If either substring reaches the sentinel, they are equal only
-                # if both do so at the same time.
+                # If either substring reaches the sentinel, they are equal only if both do so at the same time.
                 if a + k == n - 1 or b + k == n - 1:
                     return (a + k == n - 1) and (b + k == n - 1)
                 if k > 0 and is_lms[a + k] and is_lms[b + k]:
@@ -150,7 +149,7 @@ def build_suffix_array(text: str) -> list[int]:
         return []
 
     # Map characters to a dense integer alphabet: 1..sigma; reserve 0 for sentinel.
-    alphabet = sorted(set(text))
+    alphabet = sorted(set(text)) # finite alphabet, plus only one sorting pass, so sorting time is negligible compared to overall O(n) complexity
     to_int = {ch: i + 1 for i, ch in enumerate(alphabet)}
     s_int = [to_int[ch] for ch in text]
     s_int.append(0)  # sentinel
@@ -189,7 +188,7 @@ def build_lcp_array(text: str, suffix_array: list[int]) -> list[int]:
 def build_enhanced_suffix_array(s: str, t: str) -> EnhancedSuffixArray:
     """Build Enhanced Suffix Array (SA + LCP) for s and t."""
     # separator = _pick_separator(s, t)
-    separator = "\0"  # Using null character as a separator, assuming it doesn't appear in inputs
+    separator = "\0"  # Using null character as a separator, assuming it doesn't appear in inputs (paranoid about _pick_separator being too slow)
     joined = s + separator + t
     split_index = len(s)
     suffix_array = build_suffix_array(joined)

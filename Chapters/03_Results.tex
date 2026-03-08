@@ -10,18 +10,19 @@ Therefore, the \textbf{median} was chosen as the measure of central tendency for
 as the data is not normally distributed and the median is more robust to outliers than the mean.
 Consequently, the interquartile range (\acrshort{iqr}) was chosen as the measure of variability.
 
-Tables with the exact values of the median and \acrshort{iqr} for all measurements are included in the appendix (page~\pageref{app:tables}) grouped by scenario, and the plots in the main text are based on these values.
-An even more detailed summary is available as a CSV file in the supplementary materials, which includes other statistics such as the mean and standard deviation.
-
-Slope ratio tables were also generated, which shows the ratio of the linear regression slopes of the ESA and SAM for each scenario and metric,
-as a hopefully more hardware-independent measure of the relative performance of the two algorithms. These are also included in the appendix and as a CSV file in the supplementary materials.
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth, height=0.25\textheight]{Code/Results/plots/distribution_plot.pdf}
     \caption{Distribution of total time for the \acrshort{sam} and the \acrshort{esa} for the random uniform scenario and string length 10000, as an example of the right-skewed nature of the data}
     \label{fig:distribution_plot}
 \end{figure}
+
+Tables with the exact values of the median and \acrshort{iqr} for all measurements are included as a CSV file in the supplementary materials (\path{Code/Results/summary_stats.csv}), which includes other statistics such as the mean and standard deviation.
+
+Since both algorithms are expected to scale linearly with input length (O(n) time and space complexity), a linear regression was fitted to the median values of each measurement to estimate the empirical scaling constant (slope) per algorithm, scenario, and metric. 
+The goodness of fit of each regression was also measured using the coefficient of determination ($R^2$), which was found to be very close to 1 in every case. 
+The ratio of the \acrshort{sam} slope to the \acrshort{esa} slope was then calculated as a hardware-independent measure of relative performance, as the absolute slope values are likely machine-dependent. 
+Some ratios are cited in the text where relevant and full tables are included in the appendix (see page~\pageref{app:sloperatios}) and as a CSV file in the supplementary materials (\path{Code/Results/slope_ratios.csv}).
 
 \section{Time}
 The time taken to construct the \acrshort{sam} and the \acrshort{esa} and to find the \acrshort{lcs} was measured for each scenario and string length, 
@@ -82,8 +83,8 @@ Because the build time is so high for the \acrshort{esa} compared to the \acrsho
 the total time for the \acrshort{esa} is also much higher than that of the \acrshort{sam} across all scenarios and string lengths,
 with the difference becoming more pronounced as the string length increases.
 
-In the worst case scenario (random\_uniform), the total time for the \acrshort{esa} is about 15.83 times higher than that of the \acrshort{sam}.
-And even in the best case scenario (near\_identical), the \acrshort{esa} is about 7.96 times higher than that of the \acrshort{sam}!
+In the worst case scenario (random\_uniform), the total time for the \acrshort{esa} is about 15.83 times higher than that of the \acrshort{sam} (\acrshort{sam}/\acrshort{esa} slope ratio of 0.07).
+And even in the best case scenario (near\_identical), the \acrshort{esa} is about 7.96 times higher than that of the \acrshort{sam} (\acrshort{sam}/\acrshort{esa} slope ratio of 0.13).
 
 This is in spite of the fact that the \acrshort{esa} was built with the \acrshort{sais} and Kasai's algorithms,
 avoiding the traditional naive algorithms which would have used Python's built-in sorting, 
@@ -104,8 +105,8 @@ The index size was measured using the \texttt{sys.getsizeof} function, which ret
 
 As can be seen from the plot, the index size for the \acrshort{sam} is much larger than that of the \acrshort{esa}.
 
-In the best case scenario (near\_identical), the \acrshort{sam} has an index size that is about 2.89 times larger than that of the \acrshort{esa}, 
-and in the worst case scenario (repetitive\_with\_noise), the \acrshort{sam} has an index size that is about 4.97 times larger than that of the \acrshort{esa}.
+In the best case scenario (near\_identical), the \acrshort{sam} has an index size that is about 2.89 times larger than that of the \acrshort{esa} (\acrshort{sam}/\acrshort{esa} slope ratio of 2.89), 
+and in the worst case scenario (repetitive\_with\_noise), the \acrshort{sam} has an index size that is about 4.97 times larger than that of the \acrshort{esa} (\acrshort{sam}/\acrshort{esa} slope ratio of 4.97).
 
 This is to be expected, as the \acrshort{sam} is a much more complex data structure, being a deterministic finite automaton, 
 while the \acrshort{esa} is essentially just two arrays of integers.
@@ -121,10 +122,10 @@ The peak memory usage is measured using the \texttt{tracemalloc} module, which t
 \end{figure}
 
 This result was considerably more surprising. As the plot shows, peak memory usage is comparable between the two algorithms in three out of five scenarios,
-with the \acrshort{esa} even exhibiting slightly higher peak memory usage than the \acrshort{sam} in the random\_uniform scenario (only about 5\% higher, see Appendix for details).
+with the \acrshort{esa} even exhibiting 5\% higher peak memory usage than the \acrshort{sam} in the random\_uniform scenario.
 
 In the two remaining scenarios where the \acrshort{sam} consumes more peak memory (mutated\_implant and repetitive\_with\_noise), the difference is far less pronounced than what the index size differences would have led one to expect.
-The \acrshort{sam} had about 43\% higher peak memory usage than the \acrshort{esa} in the mutated\_implant scenario, and about 58\% higher in the repetitive\_with\_noise scenario (see Appendix for details).
+The \acrshort{sam} had about 43\% higher peak memory usage than the \acrshort{esa} in the mutated\_implant scenario (slope ratio of 1.43), and about 58\% higher in the repetitive\_with\_noise scenario (slope ratio of 1.58).
 
 This lends credence to the argument that a pure Python implementation of the \acrshort{esa} offers no decisive advantage in truly memory-constrained environments,
 where peak memory usage (and not final index size) determines whether the algorithm can even run on the available hardware in the first place.

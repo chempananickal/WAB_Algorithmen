@@ -1,0 +1,17 @@
+\begin{benchmarktable}{Slope Ratios: Query Time}{Linear regression slope fitted to median query time vs. string length }
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+\toprule
+Scenario & SAM slope & ESA slope & SAM / ESA ratio & SAM $R^2$ & ESA $R^2$ & Factor & Worse \\
+\midrule
+Disjoint Alphabet & 0.0009 & 0.0029 & 0.3233 & 0.9998 & 0.9999 & $3.09\times$ & ESA \\
+\hline
+Mutated Implant & 0.0013 & 0.0030 & 0.4270 & 0.9986 & 0.9999 & $2.34\times$ & ESA \\
+\hline
+Near Identical & 0.0077 & 0.0031 & 2.4885 & 0.9979 & 0.9999 & $2.49\times$ & SAM \\
+\hline
+Random Uniform & 0.0012 & 0.0030 & 0.4036 & 0.9995 & 0.9999 & $2.48\times$ & ESA \\
+\hline
+Repetitive With Noise & 0.0012 & 0.0030 & 0.3913 & 0.9981 & 1.0000 & $2.56\times$ & ESA \\
+\bottomrule
+\end{tabularx}
+\end{benchmarktable}

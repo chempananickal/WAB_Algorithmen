@@ -1,0 +1,17 @@
+\begin{benchmarktable}{Slope Ratios: Build Time}{Linear regression slope fitted to median build time vs. string length }
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+\toprule
+Scenario & SAM slope & ESA slope & SAM / ESA ratio & SAM $R^2$ & ESA $R^2$ & Factor & Worse \\
+\midrule
+Disjoint Alphabet & 0.0048 & 0.0825 & 0.0578 & 0.9996 & 0.9997 & $17.30\times$ & ESA \\
+\hline
+Mutated Implant & 0.0058 & 0.0868 & 0.0665 & 0.9993 & 0.9997 & $15.05\times$ & ESA \\
+\hline
+Near Identical & 0.0042 & 0.0915 & 0.0462 & 0.9989 & 0.9994 & $21.63\times$ & ESA \\
+\hline
+Random Uniform & 0.0043 & 0.0832 & 0.0511 & 0.9990 & 0.9996 & $19.57\times$ & ESA \\
+\hline
+Repetitive With Noise & 0.0062 & 0.0878 & 0.0709 & 0.9992 & 0.9997 & $14.11\times$ & ESA \\
+\bottomrule
+\end{tabularx}
+\end{benchmarktable}

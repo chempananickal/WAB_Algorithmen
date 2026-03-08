@@ -226,15 +226,21 @@ def export_slope_ratio_tables(summary_df: pd.DataFrame, output_dir: Path) -> Non
     for scenario, scenario_df in summary_df.groupby("scenario"):
         for col, label, unit in metrics:
             slopes: dict[str, float] = {}
+            r2s: dict[str, float] = {}
             for alg in (ALG_SAM, ALG_ESA):
                 alg_df = scenario_df[scenario_df["algorithm"] == alg].sort_values("length")
                 if len(alg_df) < 2:
                     slopes[alg] = float("nan")
+                    r2s[alg] = float("nan")
                     continue
                 x = alg_df["length"].to_numpy(dtype=float)
                 y = alg_df[col].to_numpy(dtype=float)
-                slope, _ = np.polyfit(x, y, 1)
+                slope, intercept = np.polyfit(x, y, 1)
                 slopes[alg] = slope
+                y_pred = slope * x + intercept
+                ss_res = np.sum((y - y_pred) ** 2) # Residual sum of squares
+                ss_tot = np.sum((y - np.mean(y)) ** 2) # Total sum of squares
+                r2s[alg] = 1.0 - ss_res / ss_tot if ss_tot > 0 else float("nan") # R squared, measure of goodness of fit
 
             sam_slope = slopes.get(ALG_SAM, float("nan"))
             esa_slope = slopes.get(ALG_ESA, float("nan"))
@@ -247,34 +253,51 @@ def export_slope_ratio_tables(summary_df: pd.DataFrame, output_dir: Path) -> Non
                 "SAM slope": sam_slope,
                 "ESA slope": esa_slope,
                 "SAM / ESA ratio": ratio,
+                "SAM R2": r2s.get(ALG_SAM, float("nan")),
+                "ESA R2": r2s.get(ALG_ESA, float("nan")),
             })
 
     ratio_df = pd.DataFrame(rows)
 
-    # One table per scenario
-    for scenario, sdf in ratio_df.groupby("Scenario"):
-        display = sdf[["Metric", "Unit", "SAM slope", "ESA slope", "SAM / ESA ratio"]].copy()
+    def factor_label(row: pd.Series) -> str:
+        r = row["SAM / ESA ratio"]
+        if np.isnan(r):
+            return "N/A"
+        f = r if r >= 1 else 1.0 / r
+        return f"${f:.2f}\\times$"
+
+    def worse_label(row: pd.Series) -> str:
+        r = row["SAM / ESA ratio"]
+        if np.isnan(r):
+            return "N/A"
+        return "SAM" if r >= 1 else "ESA"
+
+    # One table per metric (each row = one scenario)
+    for metric_label, mdf in ratio_df.groupby("Metric", sort=False):
+        unit = mdf["Unit"].iloc[0]
+        display = mdf[["Scenario", "SAM slope", "ESA slope", "SAM / ESA ratio", "SAM R2", "ESA R2"]].copy()
+
+        # Map internal scenario names to human-readable display names
+        scenario_names = {
+            "disjoint_alphabet": "Disjoint Alphabet",
+            "mutated_implant": "Mutated Implant",
+            "near_identical": "Near Identical",
+            "random_uniform": "Random Uniform",
+            "repetitive_with_noise": "Repetitive With Noise",
+        }
+        display["Scenario"] = display["Scenario"].map(scenario_names).fillna(display["Scenario"])
 
         # Add Factor (always ≥ 1) and Worse (which algorithm is slower/larger)
-        def factor_label(row: pd.Series) -> str:
-            r = row["SAM / ESA ratio"]
-            if np.isnan(r):
-                return "N/A"
-            f = r if r >= 1 else 1.0 / r
-            return f"{f:.2f}x"
-
-        def worse_label(row: pd.Series) -> str:
-            r = row["SAM / ESA ratio"]
-            if np.isnan(r):
-                return "N/A"
-            return "SAM" if r >= 1 else "ESA"
-
         display["Factor"] = display.apply(factor_label, axis=1)
         display["Worse"] = display.apply(worse_label, axis=1)
 
         display["SAM slope"] = display["SAM slope"].map(lambda v: f"{v:.4f}")
         display["ESA slope"] = display["ESA slope"].map(lambda v: f"{v:.4f}")
         display["SAM / ESA ratio"] = display["SAM / ESA ratio"].map(lambda v: f"{v:.4f}")
+        display["SAM R2"] = display["SAM R2"].map(lambda v: f"{v:.4f}")
+        display["ESA R2"] = display["ESA R2"].map(lambda v: f"{v:.4f}")
+
+        display = display.rename(columns={"SAM R2": r"SAM $R^2$", "ESA R2": r"ESA $R^2$"})
 
         ncols = len(display.columns)
         col_spec = "|" + "|".join(["X"] * ncols) + "|"
@@ -287,18 +310,20 @@ def export_slope_ratio_tables(summary_df: pd.DataFrame, output_dir: Path) -> Non
         )
         table_tex = table_tex.replace(r"\end{tabular}", r"\end{tabularx}")
 
-        scen_title = scenario.replace("_", "\\_")
+        # Add \hline after every data row, but not before \midrule or \bottomrule
+        table_tex = re.sub(r"(\\\\)\n(?!\\(?:bottomrule|midrule))", r"\1\n\\hline\n", table_tex)
+
         description = (
-            "Linear regression slope fitted to median values vs. string length. "
-            "Absolute slopes are likely hardware-dependent."
+            f"Linear regression slope fitted to median {metric_label.lower()} vs. string length "
         )
         latex = (
-            f"\\begin{{benchmarktable}}{{Empirical Scaling Constant Ratios: {scen_title}}}{{{description}}}\n"
+            f"\\begin{{benchmarktable}}{{Slope Ratios: {metric_label}}}{{{description}}}\n"
             + table_tex
             + "\\end{benchmarktable}"
         )
 
-        (tables_dir / f"slope_ratios_{scenario}.tex").write_text(latex, encoding="utf-8")
+        file_name = f"slope_ratios_{metric_label.lower().replace(' ', '_')}.tex"
+        (tables_dir / file_name).write_text(latex, encoding="utf-8")
 
     # Also export a combined CSV for quick inspection
     ratio_df.to_csv(output_dir / "slope_ratios.csv", index=False)
