@@ -36,7 +36,7 @@ A \acrfull{sam} is a deterministic finite automaton that represents all the subs
 \begin{displaycquote}{samdef}
   An efficient and compact data structure for representing a full index of a set of strings is a \acrlonglc{sam}, a minimal
   deterministic automaton representing the set of all suffixes of a set of strings. Since a substring is a prefix of a suffix, a
-  suffix automaton can be used to determine if a string \textit{x} is a substring in time linear in its length \textit{O(|x|)}, which is optimal.
+  suffix automaton can be used to determine if a string $x$ is a substring in time linear in its length $O(|x|)$, which is optimal.
 \end{displaycquote}
 
 The \acrshort{sam} was first introduced by Blumer et al. in 1985 \cite{sam}, 
@@ -61,7 +61,7 @@ An \acrshort{sa} is an array of integers that represent the starting positions o
 while the \acrshort{lcp} array is an array of integers that represent the length of the longest common prefix between adjacent suffixes in the \acrshort{sa}\cite{esadef}.
 
 Currently, there are algorithms to construct both the \acrshort{sa} and the \acrshort{lcp} array in 
-\textit{O(m+n)} time for two strings \textit{S} and \textit{T} of lengths \textit{m} and \textit{n} respectively, 
+$O(m+n)$ time for two strings $S$ and $T$ of lengths $m$ and $n$ respectively, 
 such as the \acrfull{sais} algorithm for the \acrshort{sa}\cite{sais} and Kasai's algorithm for the \acrshort{lcp} array\cite{kasai}.
 
 A notable feature of the \acrshort{esa} is that it can be constructed with more than two strings at once,

@@ -51,7 +51,7 @@ Conversely, if the \acrshort{lcs} of more than two strings needs to be found sim
 The \acrshort{esa} can be constructed for an arbitrary number of strings by concatenating them with unique \gls{sentinel} characters, 
 so long as one can find enough sentinels that are lexicographically smaller than any character in the input strings and not present in the strings themselves.
 The equivalent functionality for the \acrshort{sam}, the "Generalized Suffix Automaton"\cite{samdef} - 
-is a substantially more complex data structure that maintains the same $O(|\sum_{i=1}^k n_i|)$ construction complexity as the \acrshort{esa}, where $n_i$ is the length of string $i$ and $k$ is the number of strings.
+is a more complex data structure that maintains the same $O(|\sum_{i=1}^k n_i|)$ construction complexity as the \acrshort{esa}, where $n_i$ is the length of string $i$ and $k$ is the number of strings.
 Given the increased implementation complexity without a corresponding performance benefit, the \acrshort{esa} would likely be preferable for multi-string \acrshort{lcs} problems, unless a "sentinel-free" approach is specifically needed.
 
 \section{Future Work}
