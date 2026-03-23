@@ -13,9 +13,9 @@
 
 \begin{titlepage}
 \thispagestyle{empty}
-\begin{flushright}
+\begin{flushleft}
 \includegraphics[height=2.5cm]{Images/Cover/provadis-hochschule.pdf}
-\end{flushright}
+\end{flushleft}
 \vspace{1cm}
 \centering
 {\Large \textbf{WAB} \par}
@@ -62,9 +62,10 @@
 
 % Back matter in roman numerals
 \pagenumbering{roman}
-
-\printbibliography
+\cleardoublepage
+\phantomsection
 \addcontentsline{toc}{chapter}{Bibliography}
+\printbibliography
 
 \include{Chapters/Appendix}
 \include{Chapters/AI_Declaration}
